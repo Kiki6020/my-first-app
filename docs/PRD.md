@@ -1,29 +1,48 @@
 # Product Requirements Document
 
 ## Vision
-_Describe what you are building and why._
+Ein spielerisches Fun Facts Quiz für Kinder im Volksschulalter (ca. 6–10 Jahre). Kinder beantworten Richtig/Falsch-Fragen zu spannenden Fakten aus Natur, Tiere, Weltraum und mehr. Durch Gamification-Elemente wie Konfetti, Streak-Counter und Highscore-Listen macht das Lernen neuer Fakten Spaß.
 
 ## Target Users
-_Who will use this product? Describe their needs and pain points._
+
+**Primär: Carla und ihre Freunde/Geschwister (6–10 Jahre)**
+- Spielen das Quiz zum Spaß und zum Lernen
+- Wollen Punkte sammeln und mit anderen vergleichen
+- Brauchen einfache Bedienung ohne Login (nur Spitzname)
+
+**Sekundär: Eltern / Betreiber**
+- Wollen neue Fragen hinzufügen (CSV/JSON-Import)
+- Wollen sicherstellen, dass die Fragen kindgerecht sind
 
 ## Core Features (Roadmap)
 
-| Priority | Feature | Status |
-|----------|---------|--------|
-| P0 (MVP) | _Feature 1_ | Planned |
-| P0 (MVP) | _Feature 2_ | Planned |
-| P1 | _Feature 3_ | Planned |
-| P2 | _Feature 4_ | Planned |
+| Priorität | Feature | Status |
+|-----------|---------|--------|
+| P0 (MVP) | Quiz Game Core (Richtig/Falsch, 10 Runden, Konfetti, Antwort-Feedback) | Planned |
+| P0 (MVP) | Nickname & Highscore-System (Spitzname, Score speichern, Rangliste) | Planned |
+| P0 (MVP) | Streak-Counter (Feuer-Animation bei Treffer-Serien) | Planned |
+| P0 (MVP) | Fragen-Import (CSV/JSON Upload für neue Fragen + 100 Seed-Fragen) | Planned |
+| P1 | Kategorien & Badges (Themenauswahl, freischaltbare Abzeichen) | Planned |
 
 ## Success Metrics
-_How will you measure success? (e.g., user signups, retention, task completion rate)_
+- Carla spielt das Quiz mehrmals täglich
+- Highscore-Liste wird aktiv genutzt (mind. 3 verschiedene Spitznamen)
+- Neue Fragen können ohne technisches Wissen importiert werden
+- 0 kritische Bugs im Produktivbetrieb
 
 ## Constraints
-_Budget, timeline, technical limitations, team size._
+- Kleines Projekt für den Heimgebrauch
+- Betreiber (Eltern) haben wenig technisches Know-how → Admin-Funktion muss einfach sein
+- App und alle Inhalte müssen auf Deutsch sein
+- Geeignet für Kinder ab ca. 6 Jahren (einfache Sprache, große Schrift, bunte UI)
 
 ## Non-Goals
-_What are you explicitly NOT building in this version?_
+- Kein vollständiges Lernmanagementsystem
+- Kein Eltern-Dashboard / Statistiken
+- Keine Mehrsprachigkeit in der MVP-Version
+- Keine In-App-Käufe oder Werbung
+- Kein Multiplayer-Modus in Echtzeit
 
 ---
 
-Use `/requirements` to create detailed feature specifications for each item in the roadmap above.
+Funktionale Anforderungen werden in den Feature-Specs unter `/features/` detailliert.

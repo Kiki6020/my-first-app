@@ -1,0 +1,602 @@
+[
+  {
+    "frage": "Delfine schlafen mit einem Auge offen.",
+    "antwort": "wahr",
+    "erklaerung": "Delfine schlafen tatsächlich mit einer Gehirnhälfte – so bleiben sie wachsam und können weiter atmen!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Elefanten können nicht springen.",
+    "antwort": "wahr",
+    "erklaerung": "Elefanten sind die einzigen Säugetiere, die nicht springen können – ihr Körper ist einfach zu schwer!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Schmetterlinge schmecken mit ihren Füßen.",
+    "antwort": "wahr",
+    "erklaerung": "Schmetterlinge haben Geschmackssensoren an ihren Beinen – wenn sie auf einer Blume landen, schmecken sie sie sofort!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Schnecken haben Zähne.",
+    "antwort": "wahr",
+    "erklaerung": "Schnecken haben bis zu 25.000 winzige Zähnchen auf ihrer Zunge – das ist mehr als jedes andere Tier!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Ein Oktopus hat drei Herzen.",
+    "antwort": "wahr",
+    "erklaerung": "Zwei Herzen pumpen das Blut zu den Kiemen, ein drittes pumpt es durch den Körper. Blaues Blut inklusive!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Flamingos sind von Natur aus pink.",
+    "antwort": "falsch",
+    "erklaerung": "Flamingos werden grau geboren! Die rosa Farbe kommt von ihrem Futter – roten Algen und Krebstierchen.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Krokodile können ihre Zunge nicht herausstrecken.",
+    "antwort": "wahr",
+    "erklaerung": "Die Zunge des Krokodils ist am Boden des Mundes festgewachsen – herausstrecken ist unmöglich!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Pinguine können fliegen.",
+    "antwort": "falsch",
+    "erklaerung": "Pinguine haben zwar Flügel, aber sie können nicht fliegen – dafür sind sie perfekte Schwimmer und können bis zu 36 km/h schnell sein!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Spinnen haben 8 Beine.",
+    "antwort": "wahr",
+    "erklaerung": "Alle Spinnen haben genau 8 Beine – das ist auch das Merkmal, das sie von Insekten unterscheidet, die nur 6 Beine haben.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Frösche trinken Wasser durch ihre Haut.",
+    "antwort": "wahr",
+    "erklaerung": "Frösche trinken kein Wasser durch den Mund – ihr Körper nimmt Wasser direkt durch die Haut auf!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Löwen schlafen bis zu 20 Stunden am Tag.",
+    "antwort": "wahr",
+    "erklaerung": "Löwen sind große Faulenzer! Sie ruhen bis zu 20 Stunden täglich, um Energie für die Jagd zu sparen.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Wale sind Fische.",
+    "antwort": "falsch",
+    "erklaerung": "Wale sehen aus wie Fische, sind aber Säugetiere! Sie atmen Luft, haben Lungen und säugen ihre Jungtiere.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Giraffen haben genauso viele Halswirbel wie Menschen.",
+    "antwort": "wahr",
+    "erklaerung": "Sowohl Giraffen als auch Menschen haben genau 7 Halswirbel – der Unterschied liegt nur in der Größe der einzelnen Wirbel!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Ameisen können das 50-fache ihres Körpergewichts tragen.",
+    "antwort": "wahr",
+    "erklaerung": "Ameisen sind die stärksten Tiere der Welt im Verhältnis zu ihrer Körpergröße – echte Superstars!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Hunde sehen die Welt nur in Schwarz und Weiß.",
+    "antwort": "falsch",
+    "erklaerung": "Hunde sehen tatsächlich Farben, aber nicht so viele wie wir. Sie unterscheiden vor allem Blau und Gelb gut.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Kängurus können rückwärts laufen.",
+    "antwort": "falsch",
+    "erklaerung": "Kängurus können nur vorwärts hüpfen – ihre Beine und ihr Schwanz sind so gebaut, dass Rückwärtsbewegung unmöglich ist!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Schildkröten können älter als 100 Jahre werden.",
+    "antwort": "wahr",
+    "erklaerung": "Riesenschildkröten können sogar über 150 Jahre alt werden – sie sind die langlebigsten Tiere der Welt!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Geparden sind die schnellsten Landtiere der Welt.",
+    "antwort": "wahr",
+    "erklaerung": "Geparden können bis zu 110 km/h schnell rennen – schneller als ein Auto auf der Autobahn!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Fledermäuse sind blind.",
+    "antwort": "falsch",
+    "erklaerung": "Fledermäuse können sehr wohl sehen! Sie nutzen zusätzlich Echolot, um im Dunkeln Beute zu finden.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Beim Seepferdchen trägt das Männchen die Jungtiere aus.",
+    "antwort": "wahr",
+    "erklaerung": "Das Seepferdchen-Männchen hat einen Beutel, in dem die Eier ausgebrütet werden – die Väter tragen die Babys aus!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Kühe haben vier Mägen.",
+    "antwort": "wahr",
+    "erklaerung": "Kühe haben vier Magenabschnitte, damit sie schwer verdauliches Gras vollständig zerkleinern und verwerten können.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Ein Hai muss immer schwimmen, sonst stirbt er.",
+    "antwort": "falsch",
+    "erklaerung": "Die meisten Haie können ruhen! Nur bestimmte Arten müssen ständig schwimmen, um Sauerstoff zu bekommen.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Bienen sterben nach dem Stechen.",
+    "antwort": "wahr",
+    "erklaerung": "Honigbienen sterben nach einem Stich, weil ihr Stachel und Giftbeutel im Körper des Opfers stecken bleibt. Hummeln und Wespen können mehrfach stechen.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Kühe können die Treppe hinaufgehen, aber nicht hinunter.",
+    "antwort": "wahr",
+    "erklaerung": "Das Knie von Kühen lässt sich nur begrenzt beugen – nach oben klappt es, aber Treppab ist anatomisch unmöglich.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Goldfish haben ein Gedächtnis von nur 3 Sekunden.",
+    "antwort": "falsch",
+    "erklaerung": "Das ist ein Mythos! Goldfische haben ein Gedächtnis von mehreren Monaten und können sogar einfache Tricks lernen.",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Die Sonne ist ein Stern.",
+    "antwort": "wahr",
+    "erklaerung": "Unsere Sonne ist ein ganz normaler Stern – sie erscheint uns nur so groß und hell, weil sie viel näher ist als alle anderen Sterne.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Der Mond leuchtet selbst.",
+    "antwort": "falsch",
+    "erklaerung": "Der Mond hat kein eigenes Licht! Er wirft das Licht der Sonne zurück – wie ein riesiger Spiegel am Himmel.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Die Erde ist der größte Planet in unserem Sonnensystem.",
+    "antwort": "falsch",
+    "erklaerung": "Jupiter ist der größte Planet – er ist so riesig, dass über 1.300 Erden darin Platz hätten!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Im Weltall kann man keine Geräusche hören.",
+    "antwort": "wahr",
+    "erklaerung": "Schall braucht Luft, um sich auszubreiten – im leeren Weltall gibt es keine Luft, also auch keinen Schall.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Astronauten werden im Weltraum größer.",
+    "antwort": "wahr",
+    "erklaerung": "Ohne Schwerkraft dehnt sich die Wirbelsäule aus – Astronauten werden im All bis zu 5 cm größer!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Auf dem Mond gibt es Wind.",
+    "antwort": "falsch",
+    "erklaerung": "Der Mond hat keine Atmosphäre – deshalb gibt es dort weder Wind noch Wetter. Die Fußabdrücke der ersten Mondlandung sind noch immer frisch!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Venus ist der heißeste Planet in unserem Sonnensystem.",
+    "antwort": "wahr",
+    "erklaerung": "Obwohl Merkur näher an der Sonne ist, ist Venus heißer – wegen ihrer dicken Wolkenhülle, die Wärme einsperrt (bis zu 465 °C!).",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Pluto ist ein Planet.",
+    "antwort": "falsch",
+    "erklaerung": "Pluto wurde 2006 zur Kategorie 'Zwergplanet' herabgestuft, weil er seine Umlaufbahn nicht vollständig bereinigt hat.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Ein Lichtjahr misst Entfernung, nicht Zeit.",
+    "antwort": "wahr",
+    "erklaerung": "Ein Lichtjahr ist die Entfernung, die Licht in einem Jahr zurücklegt – das sind etwa 9,5 Billionen Kilometer!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Die Milchstraße ist unsere Heimatgalaxie.",
+    "antwort": "wahr",
+    "erklaerung": "Unser gesamtes Sonnensystem gehört zur Milchstraße – einer Spiralgalaxie mit über 200 Milliarden Sternen!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Sterne sind kalt.",
+    "antwort": "falsch",
+    "erklaerung": "Sterne sind unvorstellbar heiß! Unsere Sonne hat an der Oberfläche ca. 5.500 °C – im Kern sogar 15 Millionen Grad.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Mars hat zwei Monde.",
+    "antwort": "wahr",
+    "erklaerung": "Die beiden kleinen Monde des Mars heißen Phobos und Deimos – nach den griechischen Göttern der Angst und des Schreckens.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Ein Tag auf dem Mars dauert fast genauso lang wie auf der Erde.",
+    "antwort": "wahr",
+    "erklaerung": "Ein Marstag dauert 24 Stunden und 37 Minuten – fast genauso lang wie unser Erdtag!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Auf dem Saturn könnte man schwimmen – er ist so leicht wie Wasser.",
+    "antwort": "wahr",
+    "erklaerung": "Saturn ist so wenig dicht, dass er auf einem riesigen Ozean schwimmen würde – er wäre der einzige Planet, der auf Wasser treibt!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Das Universum ist etwa 14 Milliarden Jahre alt.",
+    "antwort": "wahr",
+    "erklaerung": "Wissenschaftler schätzen das Alter des Universums auf ca. 13,8 Milliarden Jahre – seit dem Urknall!",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Die Chinesische Mauer ist vom Weltraum aus mit bloßem Auge sichtbar.",
+    "antwort": "falsch",
+    "erklaerung": "Das ist ein weit verbreiteter Irrtum! Die Mauer ist zu schmal, um vom Weltraum aus sehen zu können.",
+    "kategorie": "Weltraum"
+  },
+  {
+    "frage": "Bäume schlafen im Winter.",
+    "antwort": "wahr",
+    "erklaerung": "Laubbäume fallen im Winter in eine Art Ruheschlaf – sie verlieren ihre Blätter und verlangsamen alle Lebensprozesse.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Blitze können niemals zweimal an derselben Stelle einschlagen.",
+    "antwort": "falsch",
+    "erklaerung": "Blitze schlagen sehr wohl mehrfach an der gleichen Stelle ein – hohe Gebäude wie der Eiffelturm werden hunderte Male pro Jahr getroffen!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Bambus ist das am schnellsten wachsende Gewächs der Welt.",
+    "antwort": "wahr",
+    "erklaerung": "Manche Bambusarten wachsen bis zu 91 cm pro Tag – man könnte beim Zugucken fast sehen, wie er wächst!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Salz macht Wasser schwerer.",
+    "antwort": "wahr",
+    "erklaerung": "Salzwasser ist dichter als Süßwasser – deshalb kann man im Toten Meer so leicht schwimmen und nicht untergehen!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Ein Regenbogen ist eigentlich ein vollständiger Kreis.",
+    "antwort": "wahr",
+    "erklaerung": "Vom Boden aus sehen wir nur den Halbkreis – aber aus einem Flugzeug kann man den kompletten Regenbogenkreis sehen!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Feuer braucht Sauerstoff zum Brennen.",
+    "antwort": "wahr",
+    "erklaerung": "Ohne Sauerstoff kann kein Feuer entstehen – deshalb kann man eine Kerze löschen, indem man ein Glas darüberstülpt.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Diamanten werden aus Kohlenstoff gebildet.",
+    "antwort": "wahr",
+    "erklaerung": "Diamanten und Bleistiftminen sind aus demselben Material – Kohlenstoff! Unter enormem Druck entsteht daraus der härteste Stoff der Welt.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Vulkane gibt es nur auf der Erde.",
+    "antwort": "falsch",
+    "erklaerung": "Vulkane gibt es auch auf anderen Planeten! Der größte Vulkan im Sonnensystem ist der Olympus Mons auf dem Mars – dreimal so hoch wie der Mount Everest!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Das Meer bedeckt mehr als die Hälfte der Erdoberfläche.",
+    "antwort": "wahr",
+    "erklaerung": "Die Meere bedecken etwa 71 % der Erdoberfläche – deshalb nennt man unsere Erde auch den 'Blauen Planeten'.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "In der Wüste regnet es nie.",
+    "antwort": "falsch",
+    "erklaerung": "Auch in Wüsten regnet es manchmal! Sogar die Sahara erlebt gelegentlich Regen – selten, aber es passiert.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Honig verdirbt nie.",
+    "antwort": "wahr",
+    "erklaerung": "In ägyptischen Pharaonengräbern wurde 3.000 Jahre alter Honig gefunden – und er war noch essbar! Honig ist der einzige unverderbliche Lebensmittel.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Pflanzen atmen nachts Sauerstoff ein.",
+    "antwort": "wahr",
+    "erklaerung": "Tagsüber produzieren Pflanzen Sauerstoff (Fotosynthese), aber nachts verbrauchen sie ihn – genau wie wir Menschen.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Schnee ist immer weiß.",
+    "antwort": "falsch",
+    "erklaerung": "Schnee kann verschiedene Farben haben! In manchen Regionen gibt es rosa, grünen oder sogar schwarzen Schnee – je nach Algen oder Staub.",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Der Amazonas-Regenwald produziert etwa 20 % des weltweiten Sauerstoffs.",
+    "antwort": "wahr",
+    "erklaerung": "Deshalb nennt man den Amazonas die 'Lunge der Erde' – er ist für unser Klima unglaublich wichtig!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Wasser kann nach oben fließen.",
+    "antwort": "wahr",
+    "erklaerung": "In sehr dünnen Röhrchen fließt Wasser durch Kapillarwirkung nach oben – so transportieren Pflanzen Wasser von den Wurzeln bis in die Blätter!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Menschen haben 206 Knochen.",
+    "antwort": "wahr",
+    "erklaerung": "Erwachsene Menschen haben genau 206 Knochen – Babys sogar noch mehr (etwa 270), weil viele im Laufe des Wachstums zusammenwachsen.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Das Gehirn hört im Schlaf auf zu arbeiten.",
+    "antwort": "falsch",
+    "erklaerung": "Im Schlaf ist das Gehirn sehr aktiv! Es verarbeitet die Erlebnisse des Tages, festigt Erinnerungen und reinigt sich von Abfallstoffen.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Die Haut ist das größte Organ des Menschen.",
+    "antwort": "wahr",
+    "erklaerung": "Die Haut eines Erwachsenen wiegt bis zu 10 kg und hat eine Fläche von ca. 2 Quadratmetern – sie ist unser schützendes Außenkleid!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Gähnen ist ansteckend.",
+    "antwort": "wahr",
+    "erklaerung": "Wenn du jemanden gähnen siehst (oder sogar nur daran denkst!), musst du selbst oft gähnen – das passiert auch beim Lesen über Gähnen!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Das Herz ist ungefähr so groß wie eine Faust.",
+    "antwort": "wahr",
+    "erklaerung": "Das Herz hat in etwa die Größe deiner eigenen geballten Faust – und es schlägt jeden Tag etwa 100.000 Mal!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Babys haben mehr Knochen als Erwachsene.",
+    "antwort": "wahr",
+    "erklaerung": "Babys haben etwa 270 Knochen, aber viele wachsen im Laufe der Zeit zusammen. Erwachsene haben deshalb nur noch 206.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Niesen mit offenen Augen ist unmöglich.",
+    "antwort": "wahr",
+    "erklaerung": "Das Gehirn schließt beim Niesen automatisch die Augen – der Reflex ist so stark, dass man ihn kaum überwinden kann.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Zähne können sich selbst heilen wie Knochen.",
+    "antwort": "falsch",
+    "erklaerung": "Knochen können sich regenerieren – Zähne können das nicht. Deshalb ist regelmäßiges Zähneputzen so wichtig!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Haare wachsen im Sommer schneller.",
+    "antwort": "wahr",
+    "erklaerung": "Im Sommer regt die Wärme die Durchblutung der Kopfhaut an – dadurch wächst das Haar tatsächlich etwas schneller!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Menschen verlieren täglich 50 bis 100 Haare.",
+    "antwort": "wahr",
+    "erklaerung": "Das klingt viel, ist aber ganz normal! Der Körper produziert laufend neue Haare, die die alten ersetzen.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Kinder haben einen langsameren Herzschlag als Erwachsene.",
+    "antwort": "falsch",
+    "erklaerung": "Das Herz von Kindern schlägt schneller! Bei Kleinkinder bis zu 120 Mal pro Minute, bei Erwachsenen nur 60–80 Mal.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Lachen ist gesund für den Körper.",
+    "antwort": "wahr",
+    "erklaerung": "Beim Lachen werden Glückshormone ausgeschüttet, das Immunsystem gestärkt und Stress abgebaut – Lachen ist die beste Medizin!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Nägel wachsen schneller als Haare.",
+    "antwort": "falsch",
+    "erklaerung": "Haare wachsen etwa 3 Mal schneller als Fingernägel – ein Haar wächst ca. 1,5 cm pro Monat, ein Nagel nur 0,5 cm.",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Menschen atmen beim Schlafen Wasserdampf aus.",
+    "antwort": "wahr",
+    "erklaerung": "Jedes Mal wenn du ausatmest, verlässt auch Wasserdampf deinen Körper – deshalb sieht man im Winter die Atemwolke!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Das linke und das rechte Gehirn sind für verschiedene Dinge zuständig.",
+    "antwort": "wahr",
+    "erklaerung": "Die linke Gehirnhälfte ist eher für Sprache und Logik zuständig, die rechte mehr für Kreativität und Musik – sie arbeiten aber immer zusammen!",
+    "kategorie": "Koerper"
+  },
+  {
+    "frage": "Bananen wachsen auf Bäumen.",
+    "antwort": "falsch",
+    "erklaerung": "Bananen wachsen auf riesigen Kräutern – keine echten Bäume! Die Bananenpflanze ist die größte Pflanze der Welt ohne Holzstamm.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Äpfel gehören zur Familie der Rosen.",
+    "antwort": "wahr",
+    "erklaerung": "Äpfel, Birnen, Kirschen und Erdbeeren – sie alle gehören zur Pflanzenfamilie der Rosengewächse!",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Schokolade kommt ursprünglich aus Südamerika.",
+    "antwort": "wahr",
+    "erklaerung": "Die Maya und Azteken tranken Kakao schon vor Tausenden von Jahren – damals noch bitter und ohne Zucker.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Tomaten sind Gemüse.",
+    "antwort": "falsch",
+    "erklaerung": "Botanisch gesehen sind Tomaten Früchte, weil sie Samen enthalten! Im Alltag werden sie aber oft als Gemüse bezeichnet.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Erdnüsse sind Nüsse.",
+    "antwort": "falsch",
+    "erklaerung": "Erdnüsse sind eigentlich Hülsenfrüchte – sie wachsen unter der Erde und sind mit Bohnen und Erbsen verwandt!",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Orangen wurden zuerst nach der Farbe benannt.",
+    "antwort": "falsch",
+    "erklaerung": "Die Frucht kam zuerst! Erst nach der Orange wurde die Farbe 'Orange' benannt. Vorher nannte man das Farbe auf Englisch 'geelrot'.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Cola war ursprünglich ein Medikament.",
+    "antwort": "wahr",
+    "erklaerung": "Cola wurde 1886 von einem Apotheker erfunden – als Medizin gegen Kopfschmerzen und Müdigkeit. Erst später wurde es ein Getränk.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Kartoffeln stammen ursprünglich aus Europa.",
+    "antwort": "falsch",
+    "erklaerung": "Kartoffeln stammen aus Südamerika! Spanische Seefahrer brachten sie im 16. Jahrhundert nach Europa.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Weißer Zucker ist aus Pflanzen gemacht.",
+    "antwort": "wahr",
+    "erklaerung": "Haushaltszucker stammt entweder aus Zuckerrüben (in Europa) oder aus Zuckerrohr (in warmen Ländern) – alles aus der Natur!",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Kühlschränke wurden erst im 20. Jahrhundert erfunden.",
+    "antwort": "wahr",
+    "erklaerung": "Der erste elektrische Haushaltskühlschrank wurde 1913 erfunden – vorher bewahrte man Lebensmittel in kühlen Kellern oder mit Natureis auf.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Wasserschnellen können Schiffe zum Kentern bringen.",
+    "antwort": "wahr",
+    "erklaerung": "Starke Strömungen und Wirbel in Flussstrudeln sind so gefährlich, dass sogar große Boote dort umkippen können.",
+    "kategorie": "Essen"
+  },
+  {
+    "frage": "Das Fahrrad wurde vor dem Auto erfunden.",
+    "antwort": "wahr",
+    "erklaerung": "Das erste Fahrrad gab es um 1817, das erste Auto erst 1885 – das Fahrrad ist also etwa 70 Jahre älter!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Der Eiffelturm steht in Berlin.",
+    "antwort": "falsch",
+    "erklaerung": "Der Eiffelturm steht in Paris, der Hauptstadt Frankreichs! Er wurde 1889 erbaut und ist 330 Meter hoch.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Russland ist das größte Land der Welt.",
+    "antwort": "wahr",
+    "erklaerung": "Russland ist so riesig, dass es sich über 11 Zeitzonen erstreckt – von Europa bis nach Asien!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Der Mount Everest ist der höchste Berg der Welt.",
+    "antwort": "wahr",
+    "erklaerung": "Der Mount Everest ist 8.849 Meter hoch – der höchste Punkt auf der Erde! Er liegt im Himalaya zwischen Nepal und China.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Das erste Flugzeug flog nur 12 Sekunden lang.",
+    "antwort": "wahr",
+    "erklaerung": "Am 17. Dezember 1903 flogen die Gebrüder Wright das erste Mal mit einem Motorflugzeug – nur 12 Sekunden lang, aber Geschichte schreibend!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Smartphones gibt es schon seit den 1980er Jahren.",
+    "antwort": "falsch",
+    "erklaerung": "Das erste moderne Smartphone (iPhone) kam 2007 auf den Markt. In den 80ern gab es nur große, klobige Mobiltelefone!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Das World Wide Web wurde 1991 erfunden.",
+    "antwort": "wahr",
+    "erklaerung": "Tim Berners-Lee erfand 1991 das World Wide Web – also das Internet, wie wir es heute kennen! Er wollte damit Wissenschaftler verbinden.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Indien ist das bevölkerungsreichste Land der Welt.",
+    "antwort": "wahr",
+    "erklaerung": "Seit 2023 hat Indien China überholt und ist mit über 1,4 Milliarden Menschen das bevölkerungsreichste Land der Erde!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Reines Wasser leitet Strom schlecht.",
+    "antwort": "wahr",
+    "erklaerung": "Destilliertes, reines Wasser ist ein schlechter Stromleiter! Erst wenn Salze oder Mineralien darin gelöst sind, wird es leitfähig.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Das Alphabet hat überall auf der Welt 26 Buchstaben.",
+    "antwort": "falsch",
+    "erklaerung": "Das lateinische Alphabet hat 26 Buchstaben, aber andere Schriften sind ganz anders: Das arabische Alphabet hat 28, das russische 33 Buchstaben!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Österreich hat eine längere Geschichte als Deutschland.",
+    "antwort": "wahr",
+    "erklaerung": "Österreich als eigenständiges Land (Herzogtum Österreich) entstand 976 – Deutschland als geeinter Staat erst 1871!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Die Pyramiden von Gizeh wurden von Sklaven gebaut.",
+    "antwort": "falsch",
+    "erklaerung": "Neuere Forschungen zeigen, dass die Pyramiden von gut bezahlten, freien Arbeitern gebaut wurden – keine Sklaven!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Mozart war schon als Kind ein Wunderkind.",
+    "antwort": "wahr",
+    "erklaerung": "Wolfgang Amadeus Mozart spielte schon mit 4 Jahren Klavier und schrieb mit 5 Jahren seine erste Komposition – ein echtes Wunderkind!",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Die erste Olympische Spielerin gewann Gold im Bogenschießen.",
+    "antwort": "falsch",
+    "erklaerung": "Frauen durften erst ab den Olympischen Spielen 1900 teilnehmen. Die erste Goldmedaillengewinnerin war Charlotte Cooper im Tennis.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Ein Iglu ist von innen wärmer als von außen.",
+    "antwort": "wahr",
+    "erklaerung": "Schnee ist ein guter Wärmeisolator! In einem Iglu kann es innen bis zu +16 °C warm sein, während es draußen -40 °C kalt ist.",
+    "kategorie": "Welt"
+  },
+  {
+    "frage": "Schmetterlinge sind früher Raupen gewesen.",
+    "antwort": "wahr",
+    "erklaerung": "Jeder Schmetterling beginnt als Ei, wird dann zur Raupe, verpuppt sich und schlüpft schließlich als wunderschöner Schmetterling!",
+    "kategorie": "Tiere"
+  },
+  {
+    "frage": "Bäume können miteinander kommunizieren.",
+    "antwort": "wahr",
+    "erklaerung": "Bäume tauschen über Pilznetzwerke im Boden Nährstoffe und Informationen aus – Wissenschaftler nennen das das 'Wood Wide Web'!",
+    "kategorie": "Natur"
+  },
+  {
+    "frage": "Ein Mensch kann mehr als 10.000 verschiedene Gerüche unterscheiden.",
+    "antwort": "wahr",
+    "erklaerung": "Unsere Nase ist erstaunlich leistungsfähig – manche Menschen können sogar über eine Billion verschiedene Gerüche unterscheiden!",
+    "kategorie": "Koerper"
+  }
+]
