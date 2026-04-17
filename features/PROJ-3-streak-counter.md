@@ -1,8 +1,8 @@
 # PROJ-3: Streak-Counter
 
-## Status: Planned
+## Status: In Progress
 **Created:** 2026-04-16
-**Last Updated:** 2026-04-16 (überarbeitet: Feuer-Animation → Trommelwirbel mit Sound)
+**Last Updated:** 2026-04-17 (Frontend implementiert)
 
 ## Dependencies
 - Requires: PROJ-1 (Quiz Game Core) — Streak wird während einer laufenden Runde gezählt
@@ -60,6 +60,16 @@ Ein Streak-Counter zählt wie viele Fragen das Kind hintereinander richtig beant
 
 ---
 <!-- Sections below are added by subsequent skills -->
+
+## Implementation Notes (Frontend)
+- Streak-State (`streak`, `maxStreak`) als React-State in `QuizContainer`
+- Milestone-Overlay (`MilestoneOverlay`-Komponente) erscheint als fixed fullscreen overlay mit `pointer-events-none` — blockiert nicht die nächste Frage
+- CSS-Keyframe-Animationen in `globals.css`: `drum-bounce-sm/md/lg` für die drei Meilenstein-Stufen (3/5/10)
+- Sound-Wiedergabe via `new Audio('/sounds/trommelwirbel.mp3')` mit silent catch — kein Fehler wenn Datei fehlt
+- `public/sounds/` Ordner wurde angelegt — Sounddatei muss manuell abgelegt werden
+- "Serie beendet"-Toast via `animate-streak-end` Keyframe oben auf dem Screen
+- `maxStreak` wird am Ergebnis-Screen als "Längste Serie"-Statistik angezeigt
+- Milestone-Overlay wird sofort geschlossen wenn Kind auf "Weiter" klickt
 
 ## Tech Design (Solution Architect)
 _To be added by /architecture_

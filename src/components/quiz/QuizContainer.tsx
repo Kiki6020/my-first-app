@@ -14,7 +14,6 @@ type GamePhase = 'loading' | 'playing' | 'feedback' | 'result' | 'error'
 type ErrorType = 'network' | 'too_few_questions'
 type AnswerResult = 'correct' | 'incorrect'
 type RankState = 'idle' | 'saving' | 'saved' | 'error'
-
 interface RoundAnswer {
   question: Question
   userAnswer: boolean
@@ -81,8 +80,18 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
   const [isVisible, setIsVisible] = useState(true)
   const [rankState, setRankState] = useState<RankState>('idle')
   const [rank, setRank] = useState<number | null>(null)
+
+  // ── Streak state ──
+  const [streak, setStreak] = useState(0)
+  const [maxStreak, setMaxStreak] = useState(0)
+  const [milestone, setMilestone] = useState<3 | 5 | 10 | null>(null)
+  const [showStreakEnd, setShowStreakEnd] = useState(false)
+
   const answeredRef = useRef(false)
   const scoreSavedRef = useRef(false)
+  const milestoneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const streakEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const loadQuestions = useCallback(async () => {
     setPhase('loading')
@@ -95,6 +104,10 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
     setIsVisible(true)
     setRankState('idle')
     setRank(null)
+    setStreak(0)
+    setMaxStreak(0)
+    setMilestone(null)
+    setShowStreakEnd(false)
 
     try {
       const { data, error } = await supabase
@@ -177,6 +190,41 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
 
       if (correct) {
         fireConfetti()
+
+        setStreak((prev) => {
+          const newStreak = prev + 1
+          setMaxStreak((prevMax) => Math.max(prevMax, newStreak))
+
+          if (newStreak === 3 || newStreak === 5 || newStreak === 10) {
+            setMilestone(newStreak as 3 | 5 | 10)
+
+            // Play sound — silent fallback if file missing or autoplay blocked
+            try {
+              if (audioRef.current) {
+                audioRef.current.currentTime = 0
+              } else {
+                audioRef.current = new Audio('/sounds/trommelwirbel.mp3')
+              }
+              audioRef.current.play().catch(() => {})
+            } catch {
+              // silent fallback
+            }
+
+            if (milestoneTimerRef.current) clearTimeout(milestoneTimerRef.current)
+            milestoneTimerRef.current = setTimeout(() => setMilestone(null), 1800)
+          }
+
+          return newStreak
+        })
+      } else {
+        setStreak((prev) => {
+          if (prev > 0) {
+            setShowStreakEnd(true)
+            if (streakEndTimerRef.current) clearTimeout(streakEndTimerRef.current)
+            streakEndTimerRef.current = setTimeout(() => setShowStreakEnd(false), 1500)
+          }
+          return 0
+        })
       }
 
       const newAnswers = [
@@ -189,6 +237,10 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
   )
 
   const handleAdvance = useCallback(() => {
+    // Dismiss any active milestone overlay immediately
+    setMilestone(null)
+    if (milestoneTimerRef.current) clearTimeout(milestoneTimerRef.current)
+
     if (currentIndex + 1 >= 10) {
       setPhase('result')
     } else {
@@ -214,6 +266,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
     return (
       <ResultScreen
         score={score}
+        maxStreak={maxStreak}
         nickname={nickname}
         rankState={rankState}
         rank={rank}
@@ -232,15 +285,34 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-violet-600/8 rounded-full blur-3xl" />
       </div>
 
+      {/* Milestone overlay */}
+      {milestone !== null && (
+        <MilestoneOverlay milestone={milestone} />
+      )}
+
+      {/* Serie-beendet toast */}
+      {showStreakEnd && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-2xl bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-semibold shadow-lg animate-streak-end pointer-events-none">
+          Serie beendet
+        </div>
+      )}
+
       <div className="relative z-10 w-full max-w-xl flex flex-col gap-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <span className="text-zinc-500 text-sm font-medium">
             Frage {currentIndex + 1} von 10
           </span>
-          <span className="text-cyan-400 font-bold text-sm">
-            {score} richtig
-          </span>
+          <div className="flex items-center gap-3">
+            {streak > 0 && (
+              <span className="flex items-center gap-1 text-amber-400 font-bold text-sm">
+                🥁 {streak}
+              </span>
+            )}
+            <span className="text-cyan-400 font-bold text-sm">
+              {score} richtig
+            </span>
+          </div>
         </div>
 
         {/* Progress bar */}
@@ -316,6 +388,28 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
             )}
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Milestone Overlay ────────────────────────────────────────────────────────
+
+const MILESTONE_CONFIG = {
+  3:  { animClass: 'animate-drum-sm', text: 'Super! 3 in Folge!' },
+  5:  { animClass: 'animate-drum-md', text: 'Wow! 5 in Folge! Trommelwirbel!' },
+  10: { animClass: 'animate-drum-lg', text: 'UNGLAUBLICH! Perfekte Runde!' },
+} as const
+
+function MilestoneOverlay({ milestone }: { milestone: 3 | 5 | 10 }) {
+  const { animClass, text } = MILESTONE_CONFIG[milestone]
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="flex flex-col items-center gap-3 animate-milestone-in">
+        <span className={`text-7xl select-none ${animClass}`}>🥁</span>
+        <p className="text-white text-xl font-black text-center drop-shadow-lg px-4">
+          {text}
+        </p>
       </div>
     </div>
   )
@@ -409,6 +503,7 @@ function ErrorScreen({ type, onRetry }: { type: ErrorType; onRetry: () => void }
 
 interface ResultScreenProps {
   score: number
+  maxStreak: number
   nickname: string
   rankState: RankState
   rank: number | null
@@ -416,7 +511,7 @@ interface ResultScreenProps {
   onChangeNickname: () => void
 }
 
-function ResultScreen({ score, nickname, rankState, rank, onNewRound, onChangeNickname }: ResultScreenProps) {
+function ResultScreen({ score, maxStreak, nickname, rankState, rank, onNewRound, onChangeNickname }: ResultScreenProps) {
   useEffect(() => {
     // Celebration confetti on result screen
     setTimeout(() => {
@@ -474,6 +569,16 @@ function ResultScreen({ score, nickname, rankState, rank, onNewRound, onChangeNi
               style={{ width: `${(score / 10) * 100}%` }}
             />
           </div>
+
+          {/* Max streak stat */}
+          {maxStreak > 0 && (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+              <span className="text-xl">🥁</span>
+              <p className="text-zinc-300 text-sm font-medium">
+                Längste Serie: <span className="text-amber-400 font-bold">{maxStreak}</span> in Folge
+              </p>
+            </div>
+          )}
 
           {/* Rank indicator */}
           <div className="min-h-[24px] flex items-center justify-center">
