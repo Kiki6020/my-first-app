@@ -11,8 +11,11 @@ import { test, expect } from '@playwright/test'
 
 /**
  * Navigiert zur Quiz-Seite und wartet bis die erste Frage geladen ist.
+ * Setzt localStorage-Nickname vorab, damit der NicknameScreen (PROJ-2) übersprungen wird.
  */
 async function gotoQuizAndWaitForQuestion(page: import('@playwright/test').Page) {
+  await page.goto('/')
+  await page.evaluate(() => localStorage.setItem('quizNickname', 'TestUser'))
   await page.goto('/quiz')
   // Warte bis RICHTIG-Button sichtbar ist (= Fragen sind geladen)
   await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({
