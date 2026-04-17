@@ -1,6 +1,6 @@
 # PROJ-1: Quiz Game Core
 
-## Status: Planned
+## Status: In Progress
 **Created:** 2026-04-16
 **Last Updated:** 2026-04-16
 
@@ -142,8 +142,91 @@ Start → Fragen laden (10 zufällige aus Supabase)
   → "Neue Runde" oder "Highscore ansehen"
 ```
 
+## Implementation Notes (Frontend)
+_Added: 2026-04-16_
+
+**Gebaut:**
+- `src/app/page.tsx` — Startseite mit "Carla's Quiz" Titel, Info-Chips und Start-Button (→ /quiz)
+- `src/app/quiz/page.tsx` — Quiz-Route
+- `src/components/quiz/QuizContainer.tsx` — Vollständige Spiellogik mit allen States (loading / playing / feedback / result / error)
+- `src/lib/supabase.ts` — Supabase-Client aktiviert, `Question`-Interface exportiert
+
+**Abweichungen vom Tech Design:**
+- Shuffle erfolgt client-seitig (statt `ORDER BY RANDOM()` via SQL), da Supabase Free-Tier `.rpc()` für RANDOM() nicht immer unterstützt. Alle 10 Fragen werden geladen und dann zufällig sortiert.
+- Antwort-Feedback (Erklärungstext) wird direkt in der QuestionCard angezeigt (kein separates AnswerFeedback-Overlay) — übersichtlicher auf Mobile.
+
+**Design:** Dunkel (zinc-950), Akzentfarben Cyan + Violet, keine Pinkfarben.
+
+**Nachträgliche UI-Änderung (2026-04-16):**
+- Button-Labels geändert: `RICHTIG → STIMMT`, `FALSCH → STIMMT NICHT` (kindgerechter)
+- Beide Buttons im `playing`-Zustand jetzt gleich violet (statt grün/rot), damit keine Vorwegnahme der Bedeutung
+- Im `feedback`-Zustand: nur der **korrekte** Button wird grün — unabhängig davon was Carla angeklickt hat; falscher gewählter Button wird gedimmt
+
 ## QA Test Results
-_To be added by /qa_
+_Added: 2026-04-17_
+
+### Test-Ergebnisse
+
+**Unit Tests (Vitest):** 21/21 bestanden ✅
+**E2E Tests (Playwright, Chromium):** 19/19 bestanden ✅
+
+### Acceptance Criteria
+
+| AC | Beschreibung | Status | Anmerkung |
+|----|-------------|--------|-----------|
+| AC1 | 10 Fragen pro Runde, zufällig ausgewählt | ⚠️ TEILWEISE | 10 Fragen werden angezeigt, aber immer dieselben 10 (HIGH Bug #1) |
+| AC2 | Frage + RICHTIG/FALSCH-Buttons | ✅ PASS | |
+| AC3 | Konfetti mind. 2 Sekunden bei richtiger Antwort | ⚠️ FAIL | Konfetti läuft 1800ms, AC verlangt ≥2000ms (MEDIUM Bug #2) |
+| AC4 | Roter Effekt auf geklickten falschen Button | ⚠️ FAIL | Falscher Button wird grau gedimmt, nicht rot (MEDIUM Bug #3) |
+| AC5 | Erklärungstext nach Antwort | ✅ PASS | |
+| AC6 | Fortschrittsanzeige „Frage X von 10" | ✅ PASS | |
+| AC7 | Ergebnis-Screen mit Score | ✅ PASS | Format: „10 / 10" (statt „X von 10 richtig!") — akzeptabel |
+| AC8 | „Neue Runde" + „Highscore ansehen"-Buttons | ✅ PASS | Highscore-Button korrekt deaktiviert bis PROJ-2 |
+| AC9 | Alle Texte auf Deutsch | ✅ PASS | |
+| AC10 | Keine doppelten Fragen pro Runde | ✅ PASS | |
+
+### Gefundene Bugs
+
+**Bug #1 — HIGH: Nur 10 von 100 Fragen werden jemals gespielt**
+- **Beschreibung:** Die Datenbankabfrage lädt immer nur die 10 zuletzt eingefügten Fragen (`.order('id', ascending: false).limit(10)`). Die restlichen 90 Seed-Fragen werden niemals angezeigt. Das bricht das Ziel der Abwechslung bei wiederholtem Spielen.
+- **Datei:** [src/components/quiz/QuizContainer.tsx:87-91](src/components/quiz/QuizContainer.tsx#L87-L91)
+- **Fix:** Alle Fragen laden (ohne LIMIT) oder serverseitig zufällig sampeln, z.B. `.select('*').order('id').limit(100)` + client-seitiges Shuffle mit `.slice(0, 10)`, ODER Supabase `.rpc('get_random_questions')` nutzen.
+
+**Bug #2 — MEDIUM: Konfetti läuft 1,8 Sekunden statt mindestens 2 Sekunden**
+- **Beschreibung:** `const end = Date.now() + 1800` — AC3 verlangt mind. 2 Sekunden.
+- **Datei:** [src/components/quiz/QuizContainer.tsx:25](src/components/quiz/QuizContainer.tsx#L25)
+- **Fix:** Ändern zu `Date.now() + 2000`.
+
+**Bug #3 — MEDIUM: Kein roter Effekt bei falscher Antwort**
+- **Beschreibung:** AC4 verlangt „roter Effekt auf dem geklickten Button" bei falscher Antwort. Stattdessen wird der falsch geklickte Button grau gedimmt (`bg-zinc-800 opacity-70`). Der korrekte Button wird korrekt grün hervorgehoben.
+- **Datei:** [src/components/quiz/QuizContainer.tsx:298](src/components/quiz/QuizContainer.tsx#L298)
+- **Fix:** `bg-zinc-800 border-zinc-600 text-zinc-400 opacity-70` ersetzen durch `bg-red-900/60 border-red-600 text-red-300`.
+
+### Edge Cases
+
+| Edge Case | Status | Anmerkung |
+|-----------|--------|-----------|
+| Netzwerkfehler → Fehler-Screen | ✅ PASS | |
+| <10 Fragen in DB → Fehler-Screen | ✅ PASS | |
+| „Neu laden"-Button funktioniert | ✅ PASS | |
+| Doppelklick-Schutz (Button deaktiviert) | ✅ PASS | |
+| Seite neu laden → Runde beginnt von vorne | ✅ PASS | Kein Session-Speicher |
+
+### Security Audit
+
+- **XSS/Injection:** Kein Risiko — keine freien Text-Eingaben im Quiz, nur Button-Klicks.
+- **Supabase Anon Key (client-seitig):** Akzeptabel — RLS schränkt auf SELECT ein; INSERT/DELETE nur für `service_role`.
+- **Sensitive Daten in API-Responses:** Keine — nur öffentliche Fragen-Daten.
+- **Admin-Seite:** Noch nicht implementiert (PROJ-4), daher kein Auth-Audit nötig.
+
+### Automated Test Coverage
+
+- **Unit Tests:** [src/__tests__/PROJ-1-quiz-game-core.test.tsx](src/__tests__/PROJ-1-quiz-game-core.test.tsx) — 21 Tests
+- **E2E Tests:** [tests/PROJ-1-quiz-game-core.spec.ts](tests/PROJ-1-quiz-game-core.spec.ts) — 19 Tests
+
+### Produktionsreif?
+
+**❌ NICHT BEREIT** — Bug #1 (HIGH) muss vor dem Deployment behoben werden. Bugs #2 und #3 können optional mitgefixed werden.
 
 ## Deployment
 _To be added by /deploy_
