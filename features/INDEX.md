@@ -14,7 +14,7 @@
 
 | ID | Feature | Status | Spec | Created |
 |----|---------|--------|------|---------|
-| PROJ-1 | Quiz Game Core (Richtig/Falsch, 10 Runden, Konfetti, Antwort-Feedback) | In Review | [PROJ-1-quiz-game-core.md](PROJ-1-quiz-game-core.md) | 2026-04-16 |
+| PROJ-1 | Quiz Game Core (Richtig/Falsch, 10 Runden, Konfetti, Antwort-Feedback) | Approved | [PROJ-1-quiz-game-core.md](PROJ-1-quiz-game-core.md) | 2026-04-16 |
 | PROJ-2 | Nickname & Highscore-System (Spitzname, Score speichern, Rangliste) | Planned | [PROJ-2-nickname-highscore.md](PROJ-2-nickname-highscore.md) | 2026-04-16 |
 | PROJ-3 | Streak-Counter (Feuer-Animation bei Treffer-Serien) | Planned | [PROJ-3-streak-counter.md](PROJ-3-streak-counter.md) | 2026-04-16 |
 | PROJ-4 | Fragen-Import (CSV/JSON Upload + 100 Seed-Fragen auf Deutsch) | In Progress | [PROJ-4-fragen-import.md](PROJ-4-fragen-import.md) | 2026-04-16 |

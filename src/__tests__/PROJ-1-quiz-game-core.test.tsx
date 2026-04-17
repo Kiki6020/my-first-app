@@ -19,9 +19,7 @@ let mockQueryResult: { data: unknown; error: unknown } = { data: [], error: null
 
 vi.mock('@/lib/supabase', () => {
   const chainMock = {
-    select: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    limit: vi.fn(() => Promise.resolve(mockQueryResult)),
+    select: vi.fn(() => Promise.resolve(mockQueryResult)),
   }
   return {
     supabase: {

@@ -1,6 +1,6 @@
 # PROJ-1: Quiz Game Core
 
-## Status: In Progress
+## Status: Approved
 **Created:** 2026-04-16
 **Last Updated:** 2026-04-16
 
@@ -174,9 +174,9 @@ _Added: 2026-04-17_
 
 | AC | Beschreibung | Status | Anmerkung |
 |----|-------------|--------|-----------|
-| AC1 | 10 Fragen pro Runde, zufällig ausgewählt | ⚠️ TEILWEISE | 10 Fragen werden angezeigt, aber immer dieselben 10 (HIGH Bug #1) |
+| AC1 | 10 Fragen pro Runde, zufällig ausgewählt | ✅ PASS | Alle Fragen werden geladen, client-seitig geshuffelt (Bug #1 behoben) |
 | AC2 | Frage + RICHTIG/FALSCH-Buttons | ✅ PASS | |
-| AC3 | Konfetti mind. 2 Sekunden bei richtiger Antwort | ⚠️ FAIL | Konfetti läuft 1800ms, AC verlangt ≥2000ms (MEDIUM Bug #2) |
+| AC3 | Konfetti mind. 2 Sekunden bei richtiger Antwort | ✅ PASS | Bug #2 behoben: Konfetti läuft jetzt 2000ms |
 | AC4 | Grüner Effekt auf richtigem Button + falscher Button ausgegraut | ✅ PASS | Gewünschtes Design: richtige Antwort soll klar hervorstechen |
 | AC5 | Erklärungstext nach Antwort | ✅ PASS | |
 | AC6 | Fortschrittsanzeige „Frage X von 10" | ✅ PASS | |
@@ -187,15 +187,13 @@ _Added: 2026-04-17_
 
 ### Gefundene Bugs
 
-**Bug #1 — HIGH: Nur 10 von 100 Fragen werden jemals gespielt**
-- **Beschreibung:** Die Datenbankabfrage lädt immer nur die 10 zuletzt eingefügten Fragen (`.order('id', ascending: false).limit(10)`). Die restlichen 90 Seed-Fragen werden niemals angezeigt. Das bricht das Ziel der Abwechslung bei wiederholtem Spielen.
-- **Datei:** [src/components/quiz/QuizContainer.tsx:87-91](src/components/quiz/QuizContainer.tsx#L87-L91)
-- **Fix:** Alle Fragen laden (ohne LIMIT) oder serverseitig zufällig sampeln, z.B. `.select('*').order('id').limit(100)` + client-seitiges Shuffle mit `.slice(0, 10)`, ODER Supabase `.rpc('get_random_questions')` nutzen.
+**Bug #1 — HIGH: Nur 10 von 100 Fragen wurden jemals gespielt** ✅ BEHOBEN
+- **Beschreibung:** Die Datenbankabfrage lud immer nur die 10 zuletzt eingefügten Fragen (`.order('id', ascending: false).limit(10)`). Die restlichen 90 Seed-Fragen wurden niemals angezeigt.
+- **Fix:** Abfrage auf `.select('*')` (ohne ORDER/LIMIT) geändert. Alle Fragen werden geladen, client-seitig geshuffelt und auf 10 gekürzt — echte Zufälligkeit aus dem gesamten Fragepool.
 
-**Bug #2 — MEDIUM: Konfetti läuft 1,8 Sekunden statt mindestens 2 Sekunden**
+**Bug #2 — MEDIUM: Konfetti lief 1,8 Sekunden statt mindestens 2 Sekunden** ✅ BEHOBEN
 - **Beschreibung:** `const end = Date.now() + 1800` — AC3 verlangt mind. 2 Sekunden.
-- **Datei:** [src/components/quiz/QuizContainer.tsx:25](src/components/quiz/QuizContainer.tsx#L25)
-- **Fix:** Ändern zu `Date.now() + 2000`.
+- **Fix:** Geändert auf `Date.now() + 2000`.
 
 ### Edge Cases
 
@@ -221,7 +219,7 @@ _Added: 2026-04-17_
 
 ### Produktionsreif?
 
-**❌ NICHT BEREIT** — Bug #1 (HIGH) muss vor dem Deployment behoben werden. Bug #2 (Konfetti-Dauer) kann optional mitgefixed werden.
+**✅ PRODUKTIONSREIF** — Alle Bugs behoben, alle Acceptance Criteria erfüllt. Bereit für `/deploy`.
 
 ## Deployment
 _To be added by /deploy_
