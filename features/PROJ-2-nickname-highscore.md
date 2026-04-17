@@ -79,7 +79,29 @@ _Added: 2026-04-17_
 - `src/app/page.tsx` — Highscore-Button auf Startseite
 - `src/lib/supabase.ts` — Score-Interface ergänzt
 
-**Hinweis:** Supabase-Tabelle `scores` und RLS-Policies noch nicht angelegt → `/backend` nächster Schritt
+**Hinweis:** Supabase-Tabelle `scores` und RLS-Policies → siehe Implementation Notes (Backend)
+
+## Implementation Notes (Backend)
+_Added: 2026-04-17_
+
+**Migration:** `create_scores_table` — angewendet auf Supabase Projekt `anfyyfnmnfkunsqcpipn` (eu-west-1)
+
+**Tabelle `public.scores`:**
+| Spalte | Typ | Constraint |
+|--------|-----|-----------|
+| `id` | UUID | PRIMARY KEY, DEFAULT gen_random_uuid() |
+| `nickname` | TEXT NOT NULL | CHECK char_length 2–12 |
+| `score` | INTEGER NOT NULL | CHECK 0–10 |
+| `total_questions` | INTEGER NOT NULL | DEFAULT 10, CHECK 1–10 |
+| `created_at` | TIMESTAMPTZ NOT NULL | DEFAULT now() |
+
+**RLS-Policies:**
+- `scores_select_public` — SELECT für alle (öffentliche Rangliste)
+- `scores_insert_public` — INSERT für alle mit Validierung (nickname 2–12, score 0–10)
+
+**Index:** `idx_scores_score_created` auf `(score DESC, created_at ASC)` — optimiert für Highscore-Abfrage
+
+**API Route:** `src/app/api/scores/route.ts` — bereits im Frontend-Schritt gebaut (GET + POST mit Zod)
 
 ## QA Test Results
 _To be added by /qa_
