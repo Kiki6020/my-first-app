@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { supabase, type Question } from '@/lib/supabase'
@@ -12,11 +13,17 @@ import { ArrowRight } from 'lucide-react'
 type GamePhase = 'loading' | 'playing' | 'feedback' | 'result' | 'error'
 type ErrorType = 'network' | 'too_few_questions'
 type AnswerResult = 'correct' | 'incorrect'
+type RankState = 'idle' | 'saving' | 'saved' | 'error'
 
 interface RoundAnswer {
   question: Question
   userAnswer: boolean
   correct: boolean
+}
+
+interface QuizContainerProps {
+  nickname: string
+  onChangeNickname: () => void
 }
 
 // ─── Confetti helper ──────────────────────────────────────────────────────────
@@ -63,7 +70,7 @@ function getCategoryEmoji(category: string): string {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function QuizContainer() {
+export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps) {
   const [phase, setPhase] = useState<GamePhase>('loading')
   const [errorType, setErrorType] = useState<ErrorType>('network')
   const [questions, setQuestions] = useState<Question[]>([])
@@ -72,16 +79,22 @@ export function QuizContainer() {
   const [lastResult, setLastResult] = useState<AnswerResult | null>(null)
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null)
   const [isVisible, setIsVisible] = useState(true)
+  const [rankState, setRankState] = useState<RankState>('idle')
+  const [rank, setRank] = useState<number | null>(null)
   const answeredRef = useRef(false)
+  const scoreSavedRef = useRef(false)
 
   const loadQuestions = useCallback(async () => {
     setPhase('loading')
     answeredRef.current = false
+    scoreSavedRef.current = false
     setCurrentIndex(0)
     setAnswers([])
     setLastResult(null)
     setSelectedAnswer(null)
     setIsVisible(true)
+    setRankState('idle')
+    setRank(null)
 
     try {
       const { data, error } = await supabase
@@ -115,6 +128,39 @@ export function QuizContainer() {
   useEffect(() => {
     loadQuestions()
   }, [loadQuestions])
+
+  // Save score when result phase is entered
+  useEffect(() => {
+    if (phase !== 'result' || scoreSavedRef.current) return
+    scoreSavedRef.current = true
+
+    const finalScore = answers.filter((a) => a.correct).length
+    setRankState('saving')
+
+    fetch('/api/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nickname,
+        score: finalScore,
+        total_questions: 10,
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error('save failed')
+        // Fetch updated top 20 to determine rank
+        const scoresRes = await fetch('/api/scores')
+        const { scores } = await scoresRes.json()
+        const idx = (scores as { nickname: string; score: number }[]).findIndex(
+          (s) => s.nickname === nickname && s.score === finalScore
+        )
+        setRank(idx >= 0 ? idx + 1 : null)
+        setRankState('saved')
+      })
+      .catch(() => {
+        setRankState('error')
+      })
+  }, [phase, answers, nickname])
 
   const handleAnswer = useCallback(
     (answer: boolean) => {
@@ -164,7 +210,17 @@ export function QuizContainer() {
 
   if (phase === 'loading') return <LoadingScreen />
   if (phase === 'error') return <ErrorScreen type={errorType} onRetry={loadQuestions} />
-  if (phase === 'result') return <ResultScreen score={score} onNewRound={loadQuestions} />
+  if (phase === 'result')
+    return (
+      <ResultScreen
+        score={score}
+        nickname={nickname}
+        rankState={rankState}
+        rank={rank}
+        onNewRound={loadQuestions}
+        onChangeNickname={onChangeNickname}
+      />
+    )
 
   const current = questions[currentIndex]
   const progressValue = ((currentIndex + (phase === 'feedback' ? 1 : 0)) / 10) * 100
@@ -293,7 +349,6 @@ function AnswerButton({ label, value, selectedAnswer, correctAnswer, phase, onAn
     if (isCorrect) {
       buttonClass += 'bg-emerald-500 border-emerald-400 text-white ring-4 ring-emerald-400/40'
     } else if (isSelected && !isCorrect) {
-      // Wrong button that was clicked: muted, no special highlight
       buttonClass += 'bg-zinc-800 border-zinc-600 text-zinc-400 opacity-70'
     } else {
       buttonClass += 'bg-zinc-800 border-zinc-700 text-zinc-500'
@@ -352,7 +407,16 @@ function ErrorScreen({ type, onRetry }: { type: ErrorType; onRetry: () => void }
 
 // ─── Result Screen ────────────────────────────────────────────────────────────
 
-function ResultScreen({ score, onNewRound }: { score: number; onNewRound: () => void }) {
+interface ResultScreenProps {
+  score: number
+  nickname: string
+  rankState: RankState
+  rank: number | null
+  onNewRound: () => void
+  onChangeNickname: () => void
+}
+
+function ResultScreen({ score, nickname, rankState, rank, onNewRound, onChangeNickname }: ResultScreenProps) {
   useEffect(() => {
     // Celebration confetti on result screen
     setTimeout(() => {
@@ -384,6 +448,11 @@ function ResultScreen({ score, onNewRound }: { score: number; onNewRound: () => 
       <div className="relative z-10 max-w-sm w-full flex flex-col items-center gap-8">
         {/* Score display */}
         <div className="w-full rounded-3xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm p-8 text-center flex flex-col items-center gap-5 shadow-2xl">
+          {/* Nickname */}
+          <p className="text-violet-300 text-sm font-semibold tracking-wide">
+            {nickname}
+          </p>
+
           <span className="text-6xl">{emoji}</span>
 
           <div className="flex flex-col gap-1">
@@ -405,6 +474,29 @@ function ResultScreen({ score, onNewRound }: { score: number; onNewRound: () => 
               style={{ width: `${(score / 10) * 100}%` }}
             />
           </div>
+
+          {/* Rank indicator */}
+          <div className="min-h-[24px] flex items-center justify-center">
+            {rankState === 'saving' && (
+              <p className="text-zinc-500 text-xs flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-full border-2 border-zinc-600 border-t-cyan-400 animate-spin" />
+                Score wird gespeichert…
+              </p>
+            )}
+            {rankState === 'saved' && rank !== null && (
+              <p className="text-cyan-400 text-sm font-bold">
+                🏅 Platz {rank} in der Rangliste!
+              </p>
+            )}
+            {rankState === 'saved' && rank === null && (
+              <p className="text-zinc-500 text-xs">Score gespeichert</p>
+            )}
+            {rankState === 'error' && (
+              <p className="text-red-400 text-xs">
+                Score konnte nicht gespeichert werden.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Action buttons */}
@@ -416,14 +508,21 @@ function ResultScreen({ score, onNewRound }: { score: number; onNewRound: () => 
           >
             Neue Runde →
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            disabled
-            className="w-full h-12 rounded-2xl border-zinc-700 text-zinc-500 text-sm font-medium cursor-not-allowed"
+          <Link href="/highscore" className="w-full">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-12 rounded-2xl border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 text-sm font-medium"
+            >
+              🏅 Highscore ansehen
+            </Button>
+          </Link>
+          <button
+            onClick={onChangeNickname}
+            className="text-zinc-600 hover:text-zinc-400 text-xs text-center transition-colors py-1"
           >
-            🏅 Highscore ansehen (kommt bald)
-          </Button>
+            Anderen Namen verwenden
+          </button>
         </div>
       </div>
     </div>

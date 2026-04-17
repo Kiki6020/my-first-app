@@ -13,3 +13,11 @@ export interface Question {
   category: string
   created_at: string
 }
+
+export interface Score {
+  id: string
+  nickname: string
+  score: number
+  total_questions: number
+  created_at: string
+}

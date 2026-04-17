@@ -40,14 +40,25 @@ export default function Home() {
         </div>
 
         {/* Start button */}
-        <Link href="/quiz" className="w-full max-w-xs">
-          <Button
-            size="lg"
-            className="w-full h-14 text-lg font-bold rounded-2xl bg-violet-600 hover:bg-violet-500 text-white border-0 shadow-lg shadow-violet-900/40 transition-all hover:scale-105 hover:shadow-violet-700/50"
-          >
-            Quiz starten →
-          </Button>
-        </Link>
+        <div className="w-full max-w-xs flex flex-col gap-3">
+          <Link href="/quiz" className="w-full">
+            <Button
+              size="lg"
+              className="w-full h-14 text-lg font-bold rounded-2xl bg-violet-600 hover:bg-violet-500 text-white border-0 shadow-lg shadow-violet-900/40 transition-all hover:scale-105 hover:shadow-violet-700/50"
+            >
+              Quiz starten →
+            </Button>
+          </Link>
+          <Link href="/highscore" className="w-full">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-12 rounded-2xl border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 text-sm font-medium"
+            >
+              🏆 Highscore ansehen
+            </Button>
+          </Link>
+        </div>
       </div>
     </main>
   )
