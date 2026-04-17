@@ -1,8 +1,8 @@
 # PROJ-2: Nickname & Highscore-System
 
-## Status: Planned
+## Status: In Progress
 **Created:** 2026-04-16
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-04-17
 
 ## Dependencies
 - Requires: PROJ-1 (Quiz Game Core) — Score wird am Ende einer Runde übergeben
@@ -50,7 +50,36 @@ Kinder geben vor dem Spielen einen Spitznamen ein (kein Passwort, kein Account).
 <!-- Sections below are added by subsequent skills -->
 
 ## Tech Design (Solution Architect)
-_To be added by /architecture_
+_Inlined into Frontend implementation — /architecture skipped per user request_
+
+### Komponenten
+- `src/components/quiz/NicknameScreen.tsx` — Nickname-Eingabe mit Validierung (2–12 Zeichen, Buchstaben/Zahlen/Bindestriche), speichert in `localStorage['quizNickname']`
+- `src/components/quiz/HighscoreList.tsx` — Top-20-Liste, eigener Eintrag violet hervorgehoben
+- `src/app/highscore/page.tsx` — Standalone Highscore-Seite
+- `src/app/api/scores/route.ts` — GET (top 20) + POST (Score speichern) mit Zod-Validierung
+- `src/app/quiz/page.tsx` — Client Component: prüft localStorage, zeigt NicknameScreen oder QuizContainer
+- `QuizContainer` — erweitert um `nickname`-Prop, speichert Score nach Rundenende, zeigt Rang
+
+### Datenfluss
+1. `/quiz` liest `quizNickname` aus localStorage
+2. Kein Nickname → NicknameScreen → speichert in localStorage → QuizContainer
+3. Nach Runde: `POST /api/scores` → Supabase `scores`-Tabelle
+4. Rang: `GET /api/scores` → Position in Top-20 suchen
+
+## Implementation Notes (Frontend)
+_Added: 2026-04-17_
+
+**Gebaut:**
+- `src/app/quiz/page.tsx` — umgebaut zu Client Component mit Nickname-State
+- `src/components/quiz/NicknameScreen.tsx` — Nickname-Eingabe, Validierung client-seitig
+- `src/components/quiz/HighscoreList.tsx` — Top-20-Tabelle, eigener Eintrag hervorgehoben
+- `src/app/highscore/page.tsx` — Standalone Highscore-Seite
+- `src/app/api/scores/route.ts` — GET + POST API Route mit Zod
+- `src/components/quiz/QuizContainer.tsx` — nickname-Prop, Score-Speicherung, Rang-Anzeige, aktiver Highscore-Button
+- `src/app/page.tsx` — Highscore-Button auf Startseite
+- `src/lib/supabase.ts` — Score-Interface ergänzt
+
+**Hinweis:** Supabase-Tabelle `scores` und RLS-Policies noch nicht angelegt → `/backend` nächster Schritt
 
 ## QA Test Results
 _To be added by /qa_
