@@ -84,7 +84,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
   // ── Streak state ──
   const [streak, setStreak] = useState(0)
   const [maxStreak, setMaxStreak] = useState(0)
-  const [milestone, setMilestone] = useState<3 | 5 | 10 | null>(null)
+  const [milestone, setMilestone] = useState<5 | 10 | null>(null)
   const [showStreakEnd, setShowStreakEnd] = useState(false)
 
   const answeredRef = useRef(false)
@@ -195,8 +195,8 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
           const newStreak = prev + 1
           setMaxStreak((prevMax) => Math.max(prevMax, newStreak))
 
-          if (newStreak === 3 || newStreak === 5 || newStreak === 10) {
-            setMilestone(newStreak as 3 | 5 | 10)
+          if (newStreak === 5 || newStreak === 10) {
+            setMilestone(newStreak as 5 | 10)
 
             // Play sound — silent fallback if file missing or autoplay blocked
             try {
@@ -396,20 +396,21 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
 // ─── Milestone Overlay ────────────────────────────────────────────────────────
 
 const MILESTONE_CONFIG = {
-  3:  { animClass: 'animate-drum-sm', text: 'Super! 3 in Folge!' },
   5:  { animClass: 'animate-drum-md', text: 'Wow! 5 in Folge! Trommelwirbel!' },
   10: { animClass: 'animate-drum-lg', text: 'UNGLAUBLICH! Perfekte Runde!' },
 } as const
 
-function MilestoneOverlay({ milestone }: { milestone: 3 | 5 | 10 }) {
+function MilestoneOverlay({ milestone }: { milestone: 5 | 10 }) {
   const { animClass, text } = MILESTONE_CONFIG[milestone]
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-      <div className="flex flex-col items-center gap-3 animate-milestone-in">
-        <span className={`text-7xl select-none ${animClass}`}>🥁</span>
-        <p className="text-white text-xl font-black text-center drop-shadow-lg px-4">
-          {text}
-        </p>
+      <div className="flex flex-col items-center gap-4 animate-milestone-in">
+        <span className={`text-9xl select-none ${animClass}`}>🥁</span>
+        <div className="bg-zinc-950/80 backdrop-blur-sm rounded-2xl px-6 py-3 border border-cyan-500/30">
+          <p className="text-cyan-400 text-2xl font-black text-center tracking-wide">
+            {text}
+          </p>
+        </div>
       </div>
     </div>
   )
