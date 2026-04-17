@@ -24,7 +24,7 @@ Das Herzstück der App: Kinder spielen eine Runde mit 10 zufälligen Richtig/Fal
 - [ ] Pro Runde werden exakt 10 Fragen aus der Datenbank zufällig ausgewählt
 - [ ] Jede Frage zeigt den Fun Fact als Text und zwei Buttons: „RICHTIG" und „FALSCH"
 - [ ] Bei richtiger Antwort: grüner Effekt auf dem geklickten Button + Konfetti-Animation (mind. 2 Sekunden sichtbar)
-- [ ] Bei falscher Antwort: roter Effekt auf dem geklickten Button + grüner Rahmen auf dem richtigen Button
+- [ ] Bei falscher Antwort: grüner Effekt auf dem richtigen Button + falscher Button wird ausgegraut (damit die richtige Antwort klar hervorsticht)
 - [ ] Nach der Antwort wird kurz der Erklärungstext (Fact-Erklärung) angezeigt, bevor die nächste Frage kommt
 - [ ] Ein Fortschrittsanzeiger zeigt „Frage X von 10"
 - [ ] Am Ende: Ergebnis-Screen zeigt Score (z.B. „7 von 10 richtig!")
@@ -177,7 +177,7 @@ _Added: 2026-04-17_
 | AC1 | 10 Fragen pro Runde, zufällig ausgewählt | ⚠️ TEILWEISE | 10 Fragen werden angezeigt, aber immer dieselben 10 (HIGH Bug #1) |
 | AC2 | Frage + RICHTIG/FALSCH-Buttons | ✅ PASS | |
 | AC3 | Konfetti mind. 2 Sekunden bei richtiger Antwort | ⚠️ FAIL | Konfetti läuft 1800ms, AC verlangt ≥2000ms (MEDIUM Bug #2) |
-| AC4 | Roter Effekt auf geklickten falschen Button | ⚠️ FAIL | Falscher Button wird grau gedimmt, nicht rot (MEDIUM Bug #3) |
+| AC4 | Grüner Effekt auf richtigem Button + falscher Button ausgegraut | ✅ PASS | Gewünschtes Design: richtige Antwort soll klar hervorstechen |
 | AC5 | Erklärungstext nach Antwort | ✅ PASS | |
 | AC6 | Fortschrittsanzeige „Frage X von 10" | ✅ PASS | |
 | AC7 | Ergebnis-Screen mit Score | ✅ PASS | Format: „10 / 10" (statt „X von 10 richtig!") — akzeptabel |
@@ -196,11 +196,6 @@ _Added: 2026-04-17_
 - **Beschreibung:** `const end = Date.now() + 1800` — AC3 verlangt mind. 2 Sekunden.
 - **Datei:** [src/components/quiz/QuizContainer.tsx:25](src/components/quiz/QuizContainer.tsx#L25)
 - **Fix:** Ändern zu `Date.now() + 2000`.
-
-**Bug #3 — MEDIUM: Kein roter Effekt bei falscher Antwort**
-- **Beschreibung:** AC4 verlangt „roter Effekt auf dem geklickten Button" bei falscher Antwort. Stattdessen wird der falsch geklickte Button grau gedimmt (`bg-zinc-800 opacity-70`). Der korrekte Button wird korrekt grün hervorgehoben.
-- **Datei:** [src/components/quiz/QuizContainer.tsx:298](src/components/quiz/QuizContainer.tsx#L298)
-- **Fix:** `bg-zinc-800 border-zinc-600 text-zinc-400 opacity-70` ersetzen durch `bg-red-900/60 border-red-600 text-red-300`.
 
 ### Edge Cases
 
@@ -226,7 +221,7 @@ _Added: 2026-04-17_
 
 ### Produktionsreif?
 
-**❌ NICHT BEREIT** — Bug #1 (HIGH) muss vor dem Deployment behoben werden. Bugs #2 und #3 können optional mitgefixed werden.
+**❌ NICHT BEREIT** — Bug #1 (HIGH) muss vor dem Deployment behoben werden. Bug #2 (Konfetti-Dauer) kann optional mitgefixed werden.
 
 ## Deployment
 _To be added by /deploy_

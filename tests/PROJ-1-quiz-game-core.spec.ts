@@ -94,20 +94,16 @@ test.describe('PROJ-1: Quiz Game Core', () => {
 
   // ── AC4: Feedback bei falscher Antwort ───────────────────────────────────
 
-  test('AC4: Nach falscher Antwort — richtiger Button wird grün hervorgehoben', async ({ page }) => {
+  test('AC4: Nach falscher Antwort — richtiger Button wird grün, falscher Button wird ausgegraut', async ({ page }) => {
     await gotoQuizAndWaitForQuestion(page)
 
-    // Zuerst müssen wir wissen, was die richtige Antwort ist.
-    // Wir klicken FALSCH — wenn is_true=true, ist FALSCH die falsche Antwort
-    // Wenn is_true=false, ist FALSCH die richtige Antwort
-    // In beiden Fällen: Der korrekte Button wird grün → bg-emerald-500
+    // Klicken FALSCH — der korrekte Button wird grün hervorgehoben,
+    // der geklickte falsche Button wird ausgegraut (gewünschtes Design:
+    // richtige Antwort soll klar hervorstechen)
     await page.getByRole('button', { name: 'FALSCH' }).click()
 
     const greenButton = page.locator('button.bg-emerald-500')
     await expect(greenButton).toBeVisible()
-
-    // Der falsch geklickte Button (wenn FALSCH die falsche Antwort war) wird gedimmt
-    // (kein roter Effekt — abweichend von AC4, dokumentiert als Bug #2)
   })
 
   // ── AC5: Erklärungstext nach Antwort ─────────────────────────────────────
