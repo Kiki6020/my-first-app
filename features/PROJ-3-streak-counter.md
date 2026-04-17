@@ -2,7 +2,7 @@
 
 ## Status: In Progress
 **Created:** 2026-04-16
-**Last Updated:** 2026-04-17 (Frontend implementiert)
+**Last Updated:** 2026-04-17 (Frontend implementiert + Design finalisiert)
 
 ## Dependencies
 - Requires: PROJ-1 (Quiz Game Core) — Streak wird während einer laufenden Runde gezählt
@@ -24,9 +24,8 @@ Ein Streak-Counter zählt wie viele Fragen das Kind hintereinander richtig beant
 - [ ] Ein Streak-Counter wird während einer laufenden Quiz-Runde angezeigt
 - [ ] Der Counter erhöht sich bei jeder richtigen Antwort um 1
 - [ ] Der Counter wird bei einer falschen Antwort auf 0 zurückgesetzt
-- [ ] Bei Streak-Meilenstein 3 erscheint das 🥁 Emoji mit Bounce-Animation und Text „Super! 3 in Folge!" und der Trommelwirbel-Sound ertönt
-- [ ] Bei Streak-Meilenstein 5 erscheint das 🥁 Emoji mit größerem Bounce und Text „Wow! 5 in Folge! Trommelwirbel!"
-- [ ] Bei Streak-Meilenstein 10 erscheint das 🥁 Emoji mit maximaler Animation und Text „UNGLAUBLICH! Perfekte Runde!"
+- [ ] Bei Streak-Meilenstein 5 erscheint das 🥁 Emoji mit Bounce-Animation und Texten „Wow!" / „5 in Folge" und der Trommelwirbel-Sound ertönt
+- [ ] Bei Streak-Meilenstein 10 erscheint das 🥁 Emoji mit maximaler Animation und Texten „Strike!" / „Alle richtig" und der Trommelwirbel-Sound ertönt
 - [ ] Der Trommelwirbel-Sound (`public/sounds/trommelwirbel.mp3`) wird bei jedem Meilenstein abgespielt
 - [ ] Der Sound wird nicht abgespielt, wenn der Browser keine Audiodatei finden kann (kein Fehler — stumme Fallback)
 - [ ] Die Animation ist mind. 1,5 Sekunden sichtbar, blockiert aber nicht die nächste Frage
@@ -54,7 +53,7 @@ Ein Streak-Counter zählt wie viele Fragen das Kind hintereinander richtig beant
 - Streak-State wird nur im React-State (keine Datenbankpersistenz) der laufenden Runde gespeichert
 - Animation: 🥁 Emoji mit CSS Keyframe-Animation (Bounce/Scale-Effekt)
 - Soundwiedergabe via Web Audio API (`new Audio('/sounds/trommelwirbel.mp3').play()`)
-- Meilenstein-Logik: `if (streak === 3 || streak === 5 || streak === 10) → showMilestone()`
+- Meilenstein-Logik: `if (streak === 5 || streak === 10) → showMilestone()` (Meilenstein bei 3 entfernt)
 - Höchste Streak der Runde wird am Rundenende an den Score-Screen weitergegeben
 - Unterstützte Audio-Formate: MP3 (Pflicht), M4A (optional als Fallback)
 
@@ -64,7 +63,9 @@ Ein Streak-Counter zählt wie viele Fragen das Kind hintereinander richtig beant
 ## Implementation Notes (Frontend)
 - Streak-State (`streak`, `maxStreak`) als React-State in `QuizContainer`
 - Milestone-Overlay (`MilestoneOverlay`-Komponente) erscheint als fixed fullscreen overlay mit `pointer-events-none` — blockiert nicht die nächste Frage
-- CSS-Keyframe-Animationen in `globals.css`: `drum-bounce-sm/md/lg` für die drei Meilenstein-Stufen (3/5/10)
+- Design: großer Cyan-Kreis (`w-80 h-80`, `bg-cyan-400`) mit schwarzem Text — klar lesbar, verschwindet nach 3 Sekunden
+- Texte zweizeilig: Zeile 1 groß/fett (z.B. „Wow!"), Zeile 2 kleiner (z.B. „5 in Folge")
+- CSS-Keyframe-Animationen in `globals.css`: `drum-bounce-md/lg` für Meilensteine 5 und 10
 - Sound-Wiedergabe via `new Audio('/sounds/trommelwirbel.mp3')` mit silent catch — kein Fehler wenn Datei fehlt
 - `public/sounds/` Ordner wurde angelegt — Sounddatei muss manuell abgelegt werden
 - "Serie beendet"-Toast via `animate-streak-end` Keyframe oben auf dem Screen

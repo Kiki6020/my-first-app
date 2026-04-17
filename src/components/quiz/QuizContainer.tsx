@@ -211,7 +211,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
             }
 
             if (milestoneTimerRef.current) clearTimeout(milestoneTimerRef.current)
-            milestoneTimerRef.current = setTimeout(() => setMilestone(null), 1800)
+            milestoneTimerRef.current = setTimeout(() => setMilestone(null), 3000)
           }
 
           return newStreak
@@ -396,21 +396,18 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
 // ─── Milestone Overlay ────────────────────────────────────────────────────────
 
 const MILESTONE_CONFIG = {
-  5:  { animClass: 'animate-drum-md', text: 'Wow! 5 in Folge! Trommelwirbel!' },
-  10: { animClass: 'animate-drum-lg', text: 'UNGLAUBLICH! Perfekte Runde!' },
+  5:  { animClass: 'animate-drum-md', line1: 'Wow!',   line2: '5 in Folge' },
+  10: { animClass: 'animate-drum-lg', line1: 'Strike!', line2: 'Alle richtig' },
 } as const
 
 function MilestoneOverlay({ milestone }: { milestone: 5 | 10 }) {
-  const { animClass, text } = MILESTONE_CONFIG[milestone]
+  const { animClass, line1, line2 } = MILESTONE_CONFIG[milestone]
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-      <div className="flex flex-col items-center gap-4 animate-milestone-in">
-        <span className={`text-9xl select-none ${animClass}`}>🥁</span>
-        <div className="bg-zinc-950/80 backdrop-blur-sm rounded-2xl px-6 py-3 border border-cyan-500/30">
-          <p className="text-cyan-400 text-2xl font-black text-center tracking-wide">
-            {text}
-          </p>
-        </div>
+      <div className="w-80 h-80 rounded-full bg-cyan-400 flex flex-col items-center justify-center gap-2 animate-milestone-in shadow-2xl">
+        <span className={`text-8xl select-none ${animClass}`}>🥁</span>
+        <p className="text-zinc-900 text-3xl font-black text-center">{line1}</p>
+        <p className="text-zinc-900 text-xl font-bold text-center">{line2}</p>
       </div>
     </div>
   )
