@@ -222,4 +222,9 @@ _Added: 2026-04-17_
 **✅ PRODUKTIONSREIF** — Alle Bugs behoben, alle Acceptance Criteria erfüllt. Bereit für `/deploy`.
 
 ## Deployment
-_To be added by /deploy_
+_Added: 2026-04-17_
+
+- **Production URL:** https://carlasquiz.vercel.app
+- **Deployed:** 2026-04-17
+- **Platform:** Vercel (Hobby), GitHub repo: Kiki6020/my-first-app, auto-deploy on push to main
+- **Environment Variables set in Vercel:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
