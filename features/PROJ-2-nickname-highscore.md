@@ -1,6 +1,6 @@
 # PROJ-2: Nickname & Highscore-System
 
-## Status: Approved
+## Status: Deployed
 **Created:** 2026-04-16
 **Last Updated:** 2026-04-17
 
@@ -191,4 +191,11 @@ for i in {1..100}; do curl -X POST /api/scores -d '{"nickname":"Spam","score":10
 Keine Critical oder High Bugs. Bug 2 (kein Rate Limiting) ist ein Medium-Security-Fund — für ein Heim-Quiz mit bekannten Nutzern vertretbar. Sollte vor öffentlicher Veröffentlichung behoben werden.
 
 ## Deployment
-_To be added by /deploy_
+_Added: 2026-04-17_
+
+- **Production URL:** https://carlasquiz.vercel.app
+- **Deployed:** 2026-04-17
+- **Vercel Deployment ID:** dpl_6n53pjP4hvnxDcmmmXuhsoZSrg4P
+- **Git Commit:** 338d1c2 (test(PROJ-2): Add QA test results)
+- **Build:** ✅ Erfolgreich (Turbopack, Next.js 16)
+- **Status:** READY
