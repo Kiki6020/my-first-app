@@ -1,8 +1,8 @@
 # PROJ-3: Streak-Counter
 
-## Status: Approved
+## Status: Deployed
 **Created:** 2026-04-16
-**Last Updated:** 2026-04-17 (Frontend implementiert + Design finalisiert)
+**Last Updated:** 2026-04-18 (Deployed to production)
 
 ## Dependencies
 - Requires: PROJ-1 (Quiz Game Core) — Streak wird während einer laufenden Runde gezählt
@@ -128,4 +128,7 @@ _To be added by /architecture_
 - **Security:** Keine Sicherheitsrisiken (reiner Client-State, keine DB-Schreibzugriffe)
 
 ## Deployment
-_To be added by /deploy_
+
+- **Production URL:** https://carlasquiz.vercel.app
+- **Deployed:** 2026-04-18
+- **Vercel Deployment:** `dpl_6Nnd3NSaSPSeywNi2H1v7t2BQfKN` (State: READY)
