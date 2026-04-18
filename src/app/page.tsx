@@ -59,6 +59,14 @@ export default function Home() {
             </Button>
           </Link>
         </div>
+
+        {/* Admin link — subtle, for parents/operators */}
+        <Link
+          href="/admin"
+          className="text-zinc-700 hover:text-zinc-500 text-xs transition-colors"
+        >
+          ⚙️ Admin
+        </Link>
       </div>
     </main>
   )
