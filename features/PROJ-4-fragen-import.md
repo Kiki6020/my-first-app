@@ -1,6 +1,6 @@
 # PROJ-4: Fragen-Import (CSV/JSON)
 
-## Status: Approved
+## Status: Deployed
 **Created:** 2026-04-16
 **Last Updated:** 2026-04-16
 
@@ -181,4 +181,14 @@ _Added: 2026-04-18_
 **✅ READY** — Keine Critical oder High Bugs. 3 Low-Severity-Issues können optional nachgebessert werden, blockieren das Deployment nicht.
 
 ## Deployment
-_To be added by /deploy_
+_Added: 2026-04-18_
+
+- **Production URL:** https://carlasquiz.vercel.app/admin
+- **Deployed:** 2026-04-18
+- **Vercel Deployment ID:** dpl_6QpQuVrTpyzWgNQmuq4eqGvDm7Zh
+- **Git commit:** `2706e48` feat(PROJ-4): Add Fragen-Import with CSV/JSON upload and admin panel
+- **Git tag:** v1.4.0-PROJ-4
+
+**Required Vercel Environment Variables (must be set in Vercel Dashboard):**
+- `ADMIN_PASSWORD` — the password used to log in to /admin (choose something secure, not the default)
+- `ADMIN_SESSION_SECRET` — a random secret for HMAC session cookie signing (generate with e.g. `openssl rand -hex 32`)
