@@ -1,6 +1,6 @@
 # PROJ-5: Kategorien & Badges
 
-## Status: Planned
+## Status: Architected
 **Created:** 2026-04-18
 **Last Updated:** 2026-04-18
 
@@ -84,7 +84,84 @@ Die 7 Kategorien (plus „Alle Kategorien"):
 <!-- Sections below are added by subsequent skills -->
 
 ## Tech Design (Solution Architect)
-_To be added by /architecture_
+
+### Bestehende Architektur (Ist-Zustand)
+
+PROJ-5 fügt zwischen NicknameScreen und QuizContainer einen neuen Schritt ein: die Kategorie-Auswahl.
+
+### A) Komponenten-Struktur
+
+```
+Seite (page.tsx)                        ← Flow-Steuerung erweitert
++-- NicknameScreen                      ← unverändert
++-- KategorieScreen        [NEU]        ← Kategorie auswählen
+|   +-- KategorieKarte (×8)             ← 7 Kategorien + "Alle"
+|       +-- Emoji + Name
+|       +-- Fragenanzahl-Badge
+|       +-- Gesperrt-Zustand (grau)
++-- QuizContainer                       ← erweitert
+|   +-- KategoriLabel (oben)  [NEU]     ← kleine Chip-Anzeige während Quiz
+|   +-- [bestehende UI unverändert]
+|   +-- BadgePopup             [NEU]    ← Animiertes Freischalt-Popup
++-- HighscoreList                       ← erweitert
+    +-- BadgeSammlung          [NEU]    ← Badges des eingeloggten Spielers
+        +-- BadgeSymbol (×7)            ← farbig (freigeschaltet) oder grau
+```
+
+### B) Datenmodell
+
+**Bestehende Tabelle `questions` — wird erweitert:**
+- Neues Feld `category TEXT NOT NULL DEFAULT 'Welt'`
+- Migration: alle bestehenden Fragen erhalten Fallback `'Welt'`
+
+**Neue Tabelle `nickname_badges`:**
+- `nickname TEXT` — Spitzname des Spielers
+- `category TEXT` — Kategorie des Badges (z.B. "Tiere")
+- `unlocked_at TIMESTAMP` — Zeitstempel der Freischaltung
+- Primärschlüssel: (nickname + category) — jeder Badge einmalig pro Spieler
+
+### C) Erweiterter Quiz-Flow
+
+```
+1. Spitzname eingeben
+       ↓
+2. Kategorie wählen       [NEU]
+   (oder "Alle Kategorien")
+       ↓
+3. Quiz spielen
+   - Fragen gefiltert nach Kategorie  [NEU]
+   - Kategorie-Label oben sichtbar    [NEU]
+       ↓
+4. Ergebnis-Screen
+   - Badge-Check im Hintergrund       [NEU]
+   - ggf. Badge-Popup anzeigen        [NEU]
+       ↓
+5. Highscore-Screen
+   - Badge-Sammlung des Spielers      [NEU]
+```
+
+### D) Tech-Entscheidungen
+
+| Entscheidung | Warum |
+|---|---|
+| Kategorie-Auswahl als eigener Screen (nicht Dropdown) | Kinder brauchen große, tippbare Flächen — Karten mit Emoji sind intuitiver |
+| Fragenanzahl beim Laden vorberechnen | Ein API-Aufruf zählt Fragen pro Kategorie → zeigt "12 Fragen" in jeder Karte |
+| Badge-Check serverseitig (API-Route) | Verhindert Manipulation durch den Browser |
+| Badge-Popup via shadcn `Dialog` | Bereits installiert — kein Custom-Code nötig |
+| Fallback "Welt" für Altdaten | Migration setzt Kategorie für alle bestehenden Fragen — kein Datenverlust |
+
+### E) Neue API-Routes
+
+| Route | Zweck |
+|---|---|
+| `GET /api/questions?category=Tiere` | Fragen gefiltert nach Kategorie (oder alle) |
+| `GET /api/categories` | Liste aller Kategorien mit Fragenanzahl |
+| `GET /api/badges?nickname=Carla` | Freigeschaltete Badges eines Spitznamens |
+| `POST /api/badges/check` | Badge-Check nach Quiz-Ende (serverseitig) |
+
+### F) Dependencies
+
+Keine neuen npm-Pakete nötig. Verwendete shadcn-Komponenten sind bereits installiert: `Dialog`, `Card`, `Badge`, `Button`. Animationen via Tailwind CSS.
 
 ## QA Test Results
 _To be added by /qa_
