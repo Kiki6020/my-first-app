@@ -18,7 +18,7 @@
 | PROJ-2 | Nickname & Highscore-System (Spitzname, Score speichern, Rangliste) | Deployed | [PROJ-2-nickname-highscore.md](PROJ-2-nickname-highscore.md) | 2026-04-16 |
 | PROJ-3 | Streak-Counter (Trommelwirbel-Animation bei Treffer-Serien) | Deployed | [PROJ-3-streak-counter.md](PROJ-3-streak-counter.md) | 2026-04-16 |
 | PROJ-4 | Fragen-Import (CSV/JSON Upload + 100 Seed-Fragen auf Deutsch) | Deployed | [PROJ-4-fragen-import.md](PROJ-4-fragen-import.md) | 2026-04-16 |
-| PROJ-5 | Kategorien & Badges (Themenauswahl, freischaltbare Abzeichen) | Planned | _noch nicht erstellt_ | — |
+| PROJ-5 | Kategorien & Badges (7 Themen, Kategorie-Meister-Badge pro Spitzname) | Planned | [PROJ-5-kategorien-badges.md](PROJ-5-kategorien-badges.md) | 2026-04-18 |
 
 <!-- Add features above this line -->
 
