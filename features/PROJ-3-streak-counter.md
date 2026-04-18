@@ -1,6 +1,6 @@
 # PROJ-3: Streak-Counter
 
-## Status: In Progress
+## Status: Approved
 **Created:** 2026-04-16
 **Last Updated:** 2026-04-17 (Frontend implementiert + Design finalisiert)
 
@@ -76,7 +76,56 @@ Ein Streak-Counter zählt wie viele Fragen das Kind hintereinander richtig beant
 _To be added by /architecture_
 
 ## QA Test Results
-_To be added by /qa_
+
+**Datum:** 2026-04-17
+**Tester:** QA Engineer (Claude)
+**Status: APPROVED — Produktionsreif**
+
+### Acceptance Criteria
+
+| # | Kriterium | Status |
+|---|-----------|--------|
+| AC1 | Streak-Counter während Quiz-Runde angezeigt | ✅ Pass |
+| AC2 | Counter erhöht sich bei jeder richtigen Antwort | ✅ Pass |
+| AC3 | Counter wird bei falscher Antwort auf 0 zurückgesetzt | ✅ Pass |
+| AC4 | Meilenstein 5: Overlay mit „Wow!" / „5 in Folge" + Sound | ✅ Pass |
+| AC5 | Meilenstein 10: Overlay mit „Strike!" / „Alle richtig" + Sound | ✅ Pass |
+| AC6 | Sound (`trommelwirbel.mp3`) wird bei Meilenstein abgespielt | ✅ Pass (manuell) |
+| AC7 | Sound fehlt → stummer Betrieb, kein Fehler | ✅ Pass (Code-Review) |
+| AC8 | Animation mind. 1,5s sichtbar, blockiert nicht nächste Frage | ✅ Pass (3s, pointer-events-none) |
+| AC9 | „Serie beendet"-Toast bei Streak-Abbruch | ✅ Pass |
+| AC10 | Längste Streak auf Ergebnis-Screen | ✅ Pass |
+| AC11 | Alle Texte auf Deutsch | ✅ Pass |
+
+### Edge Cases
+
+| Edge Case | Status |
+|-----------|--------|
+| Erste Frage falsch → kein „Serie beendet"-Toast | ✅ Pass |
+| Alle 10 richtig → Streak 10, Strike!-Animation | ✅ Pass |
+| Animation läuft, Kind klickt Weiter → sofort ausgeblendet | ✅ Pass |
+| Sounddatei fehlt → Animation erscheint trotzdem | ✅ Pass (Code-Review) |
+| Browser blockiert Autoplay → stummer Betrieb | ✅ Pass (Code-Review) |
+
+### Regression Tests
+
+| Feature | Status |
+|---------|--------|
+| PROJ-1: Quiz Game Core (alle 37 Unit-Tests) | ✅ Pass |
+| PROJ-2: Nickname & Highscore (alle E2E-Tests) | ✅ Pass |
+
+### Bugs gefunden
+
+| # | Schweregrad | Beschreibung | Lösung |
+|---|-------------|--------------|--------|
+| 1 | Medium | PROJ-1 Unit-Test `zeigt Score 10` schlug fehl, da neues `maxStreak`-Element ebenfalls "10" enthält | ✅ Behoben — Test auf `getAllByText` + Nachrichtentext umgestellt |
+
+### Test-Suite
+
+- **Unit-Tests (Vitest):** 37 bestanden, 0 fehlgeschlagen
+- **E2E-Tests (Playwright):** 28 bestanden (14 Chromium + 14 Mobile Safari)
+- **Responsiveness:** Mobile 375px ✅, Desktop ✅
+- **Security:** Keine Sicherheitsrisiken (reiner Client-State, keine DB-Schreibzugriffe)
 
 ## Deployment
 _To be added by /deploy_

@@ -212,8 +212,10 @@ describe('PROJ-1: Quiz Game Core', () => {
 
     it('zeigt Score 10 im Ergebnis-Screen', async () => {
       await playAllTenQuestions()
-      // Score-Element: "10" gefolgt von "/ 10"
-      expect(screen.getByText('10')).toBeInTheDocument()
+      // PROJ-3 fügt ebenfalls "10" (maxStreak) zum Ergebnis-Screen hinzu → getAllByText
+      expect(screen.getAllByText('10').length).toBeGreaterThanOrEqual(1)
+      // Eindeutiger Check: Nachricht bei Perfekt-Score
+      expect(screen.getByText('Perfekt! Alles richtig!')).toBeInTheDocument()
     })
 
     it('zeigt „Neue Runde"-Button im Ergebnis-Screen', async () => {
