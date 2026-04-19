@@ -18,7 +18,7 @@
 | PROJ-2 | Nickname & Highscore-System (Spitzname, Score speichern, Rangliste) | Deployed | [PROJ-2-nickname-highscore.md](PROJ-2-nickname-highscore.md) | 2026-04-16 |
 | PROJ-3 | Streak-Counter (Trommelwirbel-Animation bei Treffer-Serien) | Deployed | [PROJ-3-streak-counter.md](PROJ-3-streak-counter.md) | 2026-04-16 |
 | PROJ-4 | Fragen-Import (CSV/JSON Upload + 100 Seed-Fragen auf Deutsch) | Deployed | [PROJ-4-fragen-import.md](PROJ-4-fragen-import.md) | 2026-04-16 |
-| PROJ-5 | Kategorien & Badges (7 Themen, Kategorie-Meister-Badge pro Spitzname) | Deployed | [PROJ-5-kategorien-badges.md](PROJ-5-kategorien-badges.md) | 2026-04-18 |
+| PROJ-5 | Kategorien & Badges (8 Themen, Kategorie-Meister-Badge pro Spitzname) | Deployed | [PROJ-5-kategorien-badges.md](PROJ-5-kategorien-badges.md) | 2026-04-18 |
 | PROJ-6 | Highscore löschen im Admin-Panel (einzelne Einträge, Admin-Ansicht mit Datum) | Deployed | [PROJ-6-highscore-loeschen.md](PROJ-6-highscore-loeschen.md) | 2026-04-19 |
 | PROJ-7 | Admin-Panel Erweiterungen (Bulk-Delete Fragen, Bulk-Delete Highscores, Badges-Tab mit Reset) | Deployed | [PROJ-7-admin-panel-erweiterungen.md](PROJ-7-admin-panel-erweiterungen.md) | 2026-04-19 |
 

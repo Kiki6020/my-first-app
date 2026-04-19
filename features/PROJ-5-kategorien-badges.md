@@ -10,10 +10,10 @@
 - PROJ-4 (Fragen-Import) – `questions`-Tabelle braucht ein `category`-Feld
 
 ## Beschreibung
-Quizfragen werden in Kategorien eingeteilt (Tiere, Pflanzen, Körper, Welt, Weltraum, MINT, Kultur). Kinder wählen vor dem Quiz ein Thema oder spielen alle Kategorien gemischt. Zusätzlich gibt es freischaltbare Badges: Wer alle Fragen einer Kategorie mindestens einmal richtig beantwortet hat, erhält den „Kategorie-Meister"-Badge. Badges werden pro Spitzname dauerhaft gespeichert und in einer Sammlung angezeigt.
+Quizfragen werden in Kategorien eingeteilt (Tiere, Pflanzen, Körper, Welt, Weltraum, MINT, Kultur, Essen). Kinder wählen vor dem Quiz ein Thema oder spielen alle Kategorien gemischt. Zusätzlich gibt es freischaltbare Badges: Wer alle Fragen einer Kategorie mindestens einmal richtig beantwortet hat, erhält den „Kategorie-Meister"-Badge. Badges werden pro Spitzname dauerhaft gespeichert und in einer Sammlung angezeigt.
 
 ## Kategorien
-Die 7 Kategorien (plus „Alle Kategorien"):
+Die 8 Kategorien (plus „Alle Kategorien"):
 - 🐘 **Tiere** – Fragen rund um Tiere
 - 🌿 **Pflanzen** – Fragen über Pflanzen und Natur
 - 🫀 **Körper** – Fragen über den menschlichen Körper
@@ -36,7 +36,7 @@ Die 7 Kategorien (plus „Alle Kategorien"):
 
 ### Kategorie-Auswahl
 - [ ] Nach der Spitzname-Eingabe erscheint ein Kategorie-Auswahlscreen
-- [ ] Der Screen zeigt alle 7 Kategorien mit Emoji und Name als Buttons/Karten
+- [ ] Der Screen zeigt alle 8 Kategorien mit Emoji und Name als Buttons/Karten
 - [ ] Es gibt einen zusätzlichen Button „🌈 Alle Kategorien" (zufällig gemischt)
 - [ ] Jede Kategorie zeigt an, wie viele Fragen verfügbar sind (z.B. „12 Fragen")
 - [ ] Kategorien ohne Fragen (0 Fragen) sind ausgegraut und nicht auswählbar
@@ -166,7 +166,7 @@ Keine neuen npm-Pakete nötig. Verwendete shadcn-Komponenten sind bereits instal
 ## Implementation Notes (Frontend)
 
 ### Neue Dateien
-- `src/lib/categories.ts` — Kanonische Kategorie-Definitionen (7 Kategorien + Alle)
+- `src/lib/categories.ts` — Kanonische Kategorie-Definitionen (8 Kategorien + Alle)
 - `src/components/quiz/KategorieScreen.tsx` — Kategorie-Auswahl zwischen Nickname und Quiz
 - `src/components/quiz/BadgePopup.tsx` — Animiertes Badge-Freischalt-Popup (shadcn Dialog, 3s Auto-close)
 - `src/components/quiz/BadgeSammlung.tsx` — Badge-Grid (7 Slots, grau/farbig) in der Highscore-Liste
