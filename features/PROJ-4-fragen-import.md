@@ -108,6 +108,18 @@ _Added: 2026-04-18_
 - Drag & Drop für Upload nicht implementiert (Spec: nicht nötig für MVP ✓)
 - `ADMIN_PASSWORD` Standard-Wert in `.env.local`: `carlas-quiz-admin` → **vor Deployment ändern!**
 
+## Implementation Notes (Update 2026-04-19)
+
+**Neue Funktionen:**
+- "Alle Fragen löschen"-Button in der QuestionsTab (analog zu PROJ-6 Highscores): AlertDialog mit Bestätigung, löscht alle Fragen auf einmal
+- `DELETE /api/admin/questions` — neuer Endpunkt für Bulk-Delete aller Fragen
+- Echter Drag & Drop auf der Upload-Zone: `onDragOver`/`onDragLeave`/`onDrop` Handler, visuelles Highlight beim Drüberziehen
+
+**Bugfixes CSV-Import:**
+- UTF-8 BOM (`\uFEFF`) wird automatisch abgeschnitten — Numbers und Excel auf Mac fügen ihn beim Export ein
+- Semikolon als Trennzeichen wird unterstützt — deutsche Numbers/Excel-Installationen exportieren mit `;` statt `,`
+- Extra Titelzeilen vor dem Header (z. B. Dateiname-Zeile aus Numbers-Export) werden übersprungen — Parser sucht selbst nach der Zeile mit `frage;antwort;erklaerung;kategorie`
+
 ## Tech Design (Solution Architect)
 _To be added by /architecture_
 

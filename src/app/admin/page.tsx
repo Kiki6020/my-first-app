@@ -219,6 +219,7 @@ function LoginForm({ onLoggedIn }: { onLoggedIn: () => void }) {
 
 function ImportTab() {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [dragging, setDragging] = useState(false)
   const [preview, setPreview] = useState<PreviewQuestion[] | null>(null)
   const [parseError, setParseError] = useState('')
   const [importState, setImportState] = useState<
@@ -245,9 +246,7 @@ function ImportTab() {
       .catch(() => {})
   }, [])
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
+  function processFile(file: File) {
     setParseError('')
     setPreview(null)
     setImportState('idle')
@@ -275,19 +274,32 @@ function ImportTab() {
           setParseError('Ungültiges JSON-Format')
         }
       } else {
-        // CSV
-        const result = Papa.parse<Record<string, string>>(text, {
-          header: true,
-          skipEmptyLines: true,
-        })
+        // CSV — strip UTF-8 BOM if present (added by Numbers/Excel on Mac)
+        let cleanText = text.startsWith('\uFEFF') ? text.slice(1) : text
 
+        // Detect delimiter: comma or semicolon (German Numbers/Excel uses semicolons)
+        const firstLine = cleanText.split('\n')[0] ?? ''
+        const delimiter = firstLine.includes(';') ? ';' : ','
+
+        // Skip extra lines before the real header row (e.g. filename row from Numbers export)
         const requiredCols = ['frage', 'antwort', 'erklaerung', 'kategorie']
-        const headers = result.meta.fields ?? []
-        const hasAllCols = requiredCols.every((c) => headers.includes(c))
-        if (!hasAllCols) {
+        const lines = cleanText.split('\n')
+        const headerIndex = lines.findIndex((line) => {
+          const cols = line.split(delimiter).map((c) => c.trim().toLowerCase().replace(/['"]/g, ''))
+          return requiredCols.every((col) => cols.includes(col))
+        })
+        if (headerIndex > 0) {
+          cleanText = lines.slice(headerIndex).join('\n')
+        } else if (headerIndex === -1) {
           setParseError('Ungültiges Format – bitte verwende die Vorlage')
           return
         }
+
+        const result = Papa.parse<Record<string, string>>(cleanText, {
+          header: true,
+          skipEmptyLines: true,
+          delimiter,
+        })
 
         const parsed = result.data
           .map(parseCsvRow)
@@ -300,6 +312,18 @@ function ImportTab() {
       }
     }
     reader.readAsText(file, 'UTF-8')
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) processFile(file)
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) processFile(file)
   }
 
   async function handleImport() {
@@ -362,10 +386,15 @@ function ImportTab() {
           </Button>
         </div>
 
-        <label className="flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-dashed border-zinc-700 hover:border-violet-500/60 cursor-pointer transition-colors bg-zinc-900/40">
+        <label
+          className={`flex flex-col items-center gap-3 p-6 rounded-xl border-2 border-dashed cursor-pointer transition-colors bg-zinc-900/40 ${dragging ? 'border-violet-500 bg-violet-950/20' : 'border-zinc-700 hover:border-violet-500/60'}`}
+          onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={handleDrop}
+        >
           <Upload className="w-8 h-8 text-zinc-500" />
           <span className="text-zinc-400 text-sm text-center">
-            CSV oder JSON Datei auswählen
+            CSV oder JSON Datei auswählen oder hierher ziehen
           </span>
           <input
             ref={fileInputRef}
@@ -530,6 +559,7 @@ function QuestionsTab() {
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingAll, setDeletingAll] = useState(false)
   const [exporting, setExporting] = useState(false)
   const pageSize = 20
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
@@ -561,6 +591,19 @@ function QuestionsTab() {
       // silent
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  async function handleDeleteAll() {
+    setDeletingAll(true)
+    try {
+      await fetch('/api/admin/questions', { method: 'DELETE' })
+      setPage(1)
+      await loadQuestions(1)
+    } catch {
+      // silent
+    } finally {
+      setDeletingAll(false)
     }
   }
 
@@ -598,7 +641,7 @@ function QuestionsTab() {
           <h2 className="text-white font-bold text-lg">Alle Fragen</h2>
           <p className="text-zinc-400 text-sm mt-0.5">{total} Fragen gesamt</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
@@ -617,6 +660,40 @@ function QuestionsTab() {
           >
             Aktualisieren
           </Button>
+          {total > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={deletingAll}
+                  className="border-red-800/60 text-red-400 hover:text-red-300 hover:bg-red-950/30 gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {deletingAll ? 'Löschen…' : 'Alle löschen'}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Alle Fragen löschen?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-zinc-400">
+                    Alle {total} Fragen werden dauerhaft gelöscht. Danach kannst du neue Fragen importieren.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+                    Abbrechen
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAll}
+                    className="bg-red-600 hover:bg-red-500 text-white"
+                  >
+                    Alle löschen
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
 

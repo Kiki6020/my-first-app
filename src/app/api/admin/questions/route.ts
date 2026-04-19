@@ -73,6 +73,24 @@ export async function GET(request: NextRequest) {
   })
 }
 
+// ─── DELETE /api/admin/questions — delete all questions ──────────────────────
+
+export async function DELETE() {
+  const { error } = await supabase
+    .from('questions')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000')
+
+  if (error) {
+    return NextResponse.json(
+      { error: 'Fehler beim Löschen aller Fragen' },
+      { status: 500 }
+    )
+  }
+
+  return NextResponse.json({ ok: true })
+}
+
 // ─── POST /api/admin/questions — bulk import ──────────────────────────────────
 
 export async function POST(request: NextRequest) {
