@@ -19,7 +19,8 @@
 | PROJ-3 | Streak-Counter (Trommelwirbel-Animation bei Treffer-Serien) | Deployed | [PROJ-3-streak-counter.md](PROJ-3-streak-counter.md) | 2026-04-16 |
 | PROJ-4 | Fragen-Import (CSV/JSON Upload + 100 Seed-Fragen auf Deutsch) | Deployed | [PROJ-4-fragen-import.md](PROJ-4-fragen-import.md) | 2026-04-16 |
 | PROJ-5 | Kategorien & Badges (7 Themen, Kategorie-Meister-Badge pro Spitzname) | Deployed | [PROJ-5-kategorien-badges.md](PROJ-5-kategorien-badges.md) | 2026-04-18 |
+| PROJ-6 | Highscore löschen im Admin-Panel (einzelne Einträge, Admin-Ansicht mit Datum) | Planned | [PROJ-6-highscore-loeschen.md](PROJ-6-highscore-loeschen.md) | 2026-04-19 |
 
 <!-- Add features above this line -->
 
-## Next Available ID: PROJ-6
+## Next Available ID: PROJ-7
