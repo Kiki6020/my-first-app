@@ -39,7 +39,57 @@
 <!-- Sections below are added by subsequent skills -->
 
 ## Tech Design (Solution Architect)
-_To be added by /architecture_
+
+### Übersicht
+PROJ-6 erweitert das bestehende Admin-Panel um einen dritten Tab. Es wird **kein neues Datenbankschema** benötigt — die vorhandene `scores`-Tabelle und der bestehende Session-Cookie-Mechanismus werden wiederverwendet.
+
+### Komponenten-Struktur
+
+```
+Admin Page (src/app/admin/page.tsx) — bestehende Datei
++-- LoginForm                         (unverändert)
++-- TabsList
+|   +-- Tab "📥 Importieren"          (unverändert)
+|   +-- Tab "📋 Fragen verwalten"     (unverändert)
+|   +-- Tab "🏆 Highscores"           ← NEU
++-- HighscoresTab                     ← NEU (neue Komponente in derselben Datei)
+    +-- Tabelle mit allen Scores
+    |   +-- Zeile: Spitzname | Score | Datum & Uhrzeit | Löschen-Button
+    +-- AlertDialog (Bestätigung)     (bestehende shadcn-Komponente)
+    +-- Leerer Zustand                ("Noch keine Highscores vorhanden.")
+```
+
+### Neue API-Route
+
+| Route | Methode | Zweck | Auth |
+|-------|---------|-------|------|
+| `/api/admin/scores/[id]` | DELETE | Einzelnen Score löschen | Session-Cookie (wie `/api/admin/questions/[id]`) |
+
+Die bestehende öffentliche Route `GET /api/scores` wird für das Laden der Liste im Admin-Tab wiederverwendet (liefert bis zu 20 Einträge — ausreichend für ein Heimprojekt).
+
+### Datenfluss
+
+```
+HighscoresTab lädt  →  GET /api/scores  →  Supabase scores-Tabelle
+                                           (score DESC, created_at DESC)
+
+Admin klickt Löschen  →  AlertDialog erscheint
+Admin bestätigt       →  DELETE /api/admin/scores/[id]  →  Supabase
+                      →  Tabelle wird neu geladen
+```
+
+### Tech-Entscheidungen
+
+| Entscheidung | Wahl | Warum |
+|---|---|---|
+| Wo wird der Tab gebaut? | In der bestehenden `src/app/admin/page.tsx` | Keine neue Datei nötig — Pattern ist identisch mit `QuestionsTab` |
+| Wie wird Auth geprüft? | Session-Cookie via bestehendes Middleware-Muster | Konsistent mit allen anderen Admin-Routen, kein zusätzlicher Aufwand |
+| Wie wird die Liste geladen? | Bestehende `GET /api/scores`-Route | Die scores-Tabelle bleibt sehr klein (Heimgebrauch), kein neuer Endpunkt nötig |
+| Bestätigungs-Dialog | shadcn AlertDialog (bereits installiert) | Gleiche Komponente wie beim Fragen-Löschen — kein neues Paket |
+| Paging? | Kein Paging | Max. ein paar Dutzend Einträge erwartet |
+
+### Keine neuen Pakete erforderlich
+Alle benötigten shadcn-Komponenten (Table, AlertDialog, Button, Badge, Tabs) sind bereits installiert.
 
 ## QA Test Results
 _To be added by /qa_
