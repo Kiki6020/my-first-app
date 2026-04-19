@@ -209,6 +209,15 @@ _Added: 2026-04-18_
 - **Git commit:** `0469aa3` fix(PROJ-4): Fix CSV import for Numbers/Excel export + add bulk delete
 - **Git tag:** v1.4.1-PROJ-4-fix
 
+## Deployment (Update 2026-04-19 — Badges Tab)
+
+- **Production URL:** https://carlasquiz.vercel.app/admin
+- **Deployed:** 2026-04-19
+- **Vercel Deployment ID:** dpl_Fd25rB7X6cjDcmcJBvXdQ6x7hzbs
+- **Git commit:** `4b41320` feat(PROJ-4): Add Badges tab to admin panel with delete-all function
+- **Git tag:** v1.4.2-PROJ-4-badges-tab
+- **What's live:** Neuer Tab „🏅 Badges" im Admin-Panel — zeigt Gesamt-Badge-Anzahl aller Spieler, „Alle Badges löschen"-Button mit Bestätigungs-Dialog, GET/DELETE `/api/admin/badges`
+
 **Required Vercel Environment Variables (must be set in Vercel Dashboard):**
 - `ADMIN_PASSWORD` — the password used to log in to /admin (choose something secure, not the default)
 - `ADMIN_SESSION_SECRET` — a random secret for HMAC session cookie signing (generate with e.g. `openssl rand -hex 32`)
