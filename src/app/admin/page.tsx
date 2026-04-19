@@ -1003,6 +1003,100 @@ function HighscoresTab() {
   )
 }
 
+// ─── Badges Tab ──────────────────────────────────────────────────────────────
+
+function BadgesTab() {
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [deletingAll, setDeletingAll] = useState(false)
+  const [deleted, setDeleted] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/admin/badges')
+      .then((r) => r.json())
+      .then((data) => setTotal(data.total ?? 0))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  async function handleDeleteAll() {
+    setDeletingAll(true)
+    try {
+      await fetch('/api/admin/badges', { method: 'DELETE' })
+      setTotal(0)
+      setDeleted(true)
+    } catch {
+      // silent
+    } finally {
+      setDeletingAll(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div>
+        <h2 className="text-white font-bold text-lg">Badges zurücksetzen</h2>
+        <p className="text-zinc-400 text-sm mt-0.5">
+          Alle vergebenen Kategorie-Badges löschen — Carla und alle anderen Spieler müssen sie sich neu verdienen.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 flex flex-col gap-4">
+        {loading ? (
+          <div className="flex justify-center py-4">
+            <div className="w-6 h-6 rounded-full border-4 border-zinc-700 border-t-cyan-400 animate-spin" />
+          </div>
+        ) : deleted || total === 0 ? (
+          <div className="rounded-xl bg-emerald-950/40 border border-emerald-700/50 p-4 text-emerald-300 text-sm">
+            ✅ Alle Badges wurden gelöscht — die Spieler können sie sich neu verdienen.
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">🏅</span>
+              <div>
+                <p className="text-white font-bold text-lg">{total} Badge{total !== 1 ? 's' : ''} vergeben</p>
+                <p className="text-zinc-400 text-sm">Alle Spieler zusammen</p>
+              </div>
+            </div>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={deletingAll}
+                  className="bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl gap-2 w-fit"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {deletingAll ? 'Löschen…' : 'Alle Badges löschen'}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Alle Badges löschen?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-zinc-400">
+                    Alle {total} vergebenen Badges werden dauerhaft gelöscht. Alle Spieler müssen sich ihre Kategorie-Badges neu verdienen.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+                    Abbrechen
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAll}
+                    className="bg-red-600 hover:bg-red-500 text-white"
+                  >
+                    Alle löschen
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Admin Page ──────────────────────────────────────────────────────────
 
 export default function AdminPage() {
@@ -1085,6 +1179,12 @@ export default function AdminPage() {
             >
               🏆 Highscores
             </TabsTrigger>
+            <TabsTrigger
+              value="badges"
+              className="rounded-lg data-[state=active]:bg-violet-600 data-[state=active]:text-white text-zinc-400"
+            >
+              🏅 Badges
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="import" className="mt-6">
@@ -1097,6 +1197,10 @@ export default function AdminPage() {
 
           <TabsContent value="highscores" className="mt-6">
             <HighscoresTab />
+          </TabsContent>
+
+          <TabsContent value="badges" className="mt-6">
+            <BadgesTab />
           </TabsContent>
         </Tabs>
       </div>
