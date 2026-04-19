@@ -48,6 +48,7 @@ export default function QuizPage() {
       nickname={nickname}
       category={kategorie}
       onChangeNickname={handleChangeNickname}
+      onBackToKategorien={() => setKategorie(null)}
     />
   )
 }

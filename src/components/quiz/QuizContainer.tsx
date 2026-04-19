@@ -26,6 +26,7 @@ interface QuizContainerProps {
   nickname: string
   category: string  // 'alle' oder Kategorie-ID wie 'Tiere', 'Weltraum', …
   onChangeNickname: () => void
+  onBackToKategorien: () => void
 }
 
 // ─── Confetti helper ──────────────────────────────────────────────────────────
@@ -56,7 +57,7 @@ function fireConfetti() {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function QuizContainer({ nickname, category, onChangeNickname }: QuizContainerProps) {
+export function QuizContainer({ nickname, category, onChangeNickname, onBackToKategorien }: QuizContainerProps) {
   const [phase, setPhase] = useState<GamePhase>('loading')
   const [errorType, setErrorType] = useState<ErrorType>('network')
   const [questions, setQuestions] = useState<Question[]>([])
@@ -297,7 +298,7 @@ export function QuizContainer({ nickname, category, onChangeNickname }: QuizCont
           nickname={nickname}
           rankState={rankState}
           rank={rank}
-          onNewRound={loadQuestions}
+          onNewRound={onBackToKategorien}
           onChangeNickname={onChangeNickname}
         />
       </>
