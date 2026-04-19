@@ -299,8 +299,8 @@ test.describe('PROJ-4: Fragen-Import', () => {
     await page.getByRole('tab', { name: /Fragen verwalten/i }).click()
     await expect(page.getByRole('table')).toBeVisible({ timeout: 10000 })
 
-    // Löschen-Buttons in der Tabelle (Trash2-Icon-Buttons)
-    const deleteButtons = page.locator('button').filter({ has: page.locator('svg.lucide-trash-2') })
+    // Löschen-Buttons in der Tabelle (Trash2-Icon-Buttons) — nur Zeilen-Buttons in tbody
+    const deleteButtons = page.locator('tbody tr button').filter({ has: page.locator('svg.lucide-trash-2') })
     await deleteButtons.first().click()
     await expect(page.getByText('Frage löschen?')).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('dauerhaft gelöscht')).toBeVisible()

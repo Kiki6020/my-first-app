@@ -22,8 +22,9 @@ Ein spielerisches Fun Facts Quiz für Kinder im Volksschulalter (ca. 6–10 Jahr
 | P0 (MVP) | Nickname & Highscore-System (Spitzname, Score speichern, Rangliste) | Deployed |
 | P0 (MVP) | Streak-Counter (Trommelwirbel-Animation bei Treffer-Serien) | Deployed |
 | P0 (MVP) | Fragen-Import (CSV/JSON Upload für neue Fragen + 100 Seed-Fragen) | Deployed |
-| P1 | Kategorien & Badges (8 Themen, Kategorie-Meister-Badge pro Spitzname) | Approved |
-| P1 | Highscore löschen im Admin-Panel (einzelne Einträge mit Bestätigung) | Planned |
+| P1 | Kategorien & Badges (8 Themen, Kategorie-Meister-Badge pro Spitzname) | Deployed |
+| P1 | Highscore löschen im Admin-Panel (einzelne Einträge mit Bestätigung) | Deployed |
+| P1 | Admin-Panel Erweiterungen (Bulk-Delete Fragen/Highscores, Badges-Tab mit Reset) | Deployed |
 
 ## Success Metrics
 - Carla spielt das Quiz mehrmals täglich

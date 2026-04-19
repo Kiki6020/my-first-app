@@ -204,6 +204,9 @@ test.describe('PROJ-1: Quiz Game Core', () => {
       timeout: 5000,
     })
     await page.getByRole('button', { name: /neue runde/i }).click()
+    // Seit PROJ-5: Neue Runde → KategorieScreen → Quiz (nicht direkt Quiz)
+    await expect(page.getByText('Welches Thema?')).toBeVisible({ timeout: 5000 })
+    await page.getByRole('button', { name: /alle kategorien/i }).click()
     await expect(page.getByText('Frage 1 von 10')).toBeVisible({ timeout: 10000 })
   })
 
