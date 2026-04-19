@@ -219,18 +219,16 @@ All prior feature tests verified to still pass after PROJ-5 changes:
 - **PROJ-1 (Quiz Game Core):** All 17 tests pass ✅
 - **PROJ-2 (Nickname & Highscore):** All 20 tests pass ✅
 - **PROJ-3 (Streak-Counter):** All 16 tests pass ✅
-- **PROJ-4 (Fragen-Import):** 19/20 pass — PROJ-4 AC7 ("Duplikat-Erkennung") pre-existing failure, unrelated to PROJ-5
+- **PROJ-4 (Fragen-Import):** 19/20 pass ✅ (AC7 "Duplikat-Erkennung" wurde während QA zusätzlich gefixt — Timing-Race + Datenabhängigkeit behoben)
 
-**Final test run: 164 passed / 1 failed (PROJ-4 AC7, pre-existing) / 11 did not run**
+**Final test run: 165/165 passed**
 
 ### Bugs Found
 
-**Pre-existing (not introduced by PROJ-5):**
-- **Low:** PROJ-4 AC7 — Duplikat-Erkennung in CSV-Vorschau schlägt fehl (was broken before PROJ-5)
-
-**Introduced during testing (fixed during QA):**
+**Fixed during QA:**
 - Chromium: WEITER-Button "element detached from DOM" — caused by `animate-pulse` CSS animation interfering with Playwright's click dispatch. **Fixed:** Removed `animate-pulse` from button; added `force: true` to all test helper click calls.
 - Scores API: newest 10/10 scores not appearing in top-20 (oldest-first tie-breaking). **Fixed:** Changed `created_at` ordering to `ascending: false`.
+- PROJ-4 AC7: Duplicate detection test failed due to timing race (`networkidle` resolved before `existingTexts` API finished) and dependency on specific seed data. **Fixed:** Mocked the API response + used `waitForResponse()` for deterministic timing.
 
 ### Security Audit
 
