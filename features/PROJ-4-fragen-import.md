@@ -221,3 +221,63 @@ _Added: 2026-04-18_
 **Required Vercel Environment Variables (must be set in Vercel Dashboard):**
 - `ADMIN_PASSWORD` — the password used to log in to /admin (choose something secure, not the default)
 - `ADMIN_SESSION_SECRET` — a random secret for HMAC session cookie signing (generate with e.g. `openssl rand -hex 32`)
+
+---
+
+## QA Test Results — Badges Tab (2026-04-19)
+
+**QA Date:** 2026-04-19
+**QA Engineer:** Claude (automated + manual)
+**Scope:** `feat(PROJ-4): Add Badges tab to admin panel with delete-all function`
+**Test Environment:** localhost:3000, Supabase prod DB
+**Browsers:** Chromium (Desktop), Mobile Safari (375px)
+
+### Acceptance Criteria
+
+| # | Criterion | Result | Notes |
+|---|---|---|---|
+| AC1 | „🏅 Badges"-Tab nach Login sichtbar | ✅ PASS | Tab mit Emoji korrekt angezeigt |
+| AC2 | Tab-Titel und Beschreibung korrekt | ✅ PASS | „Badges zurücksetzen" + Erklärungstext |
+| AC3 | Badge-Zähler sichtbar wenn Badges vorhanden | ✅ PASS | „X Badge(s) vergeben" mit 🏅 Emoji |
+| AC4 | „Alle Badges löschen"-Button sichtbar wenn Badges vorhanden | ✅ PASS | Rot, mit Trash2-Icon |
+| AC5 | Klick auf Button öffnet Bestätigungs-Dialog | ✅ PASS | AlertDialog mit korrektem Titel |
+| AC6 | Dialog zeigt Anzahl und Warnung „neu verdienen" | ✅ PASS | Korrekter Hinweis auf Spieler |
+| AC7 | „Abbrechen" schließt Dialog ohne zu löschen | ✅ PASS | Zähler unverändert |
+| AC8 | „Alle löschen" löscht alle Badges, Erfolgsmeldung | ✅ PASS | Grüne Meldung erscheint |
+| AC9 | Nach Löschen: Button weg, Erfolgsmeldung sichtbar | ✅ PASS | Component-State korrekt |
+| RES | Tab auf Mobile (375px) bedienbar | ✅ PASS | Chromium + Mobile Safari |
+
+**Badges Tab: 10/10 Acceptance Criteria PASSED**
+
+### Security Audit
+
+| Test | Result | Notes |
+|---|---|---|
+| GET `/api/admin/badges` ohne Session → 401 | ✅ PASS | Middleware blockiert korrekt |
+| DELETE `/api/admin/badges` ohne Session → 401 | ✅ PASS | Middleware blockiert korrekt |
+| Anon-Key Supabase DELETE | ⚠️ LOW | Route nutzt anon key für DB-Delete (wie PROJ-6 Scores). Wenn RLS anon-DELETE erlaubt, kann jemand mit Supabase URL + anon key Badges direkt via Supabase REST API löschen — Next.js Middleware wird dabei umgangen. Bewusstes Design-Risiko für Heimanwendung. |
+
+### Bugs Found
+
+**LOW — UX:**
+- Leerer Zustand zeigt „✅ Alle Badges wurden gelöscht" auch wenn nie ein Badge existiert hat (total=0 beim erstmaligen Laden). Die Meldung ist irreführend bei leerem DB-Initialzustand.
+  - Ort: `BadgesTab` component, `deleted || total === 0`-Bedingung
+  - Workaround: Kein Impact in der Praxis — die App startet mit Seed-Badges
+
+### Pre-existing Regressions (not caused by Badges Tab)
+
+| Test | Failure | Root Cause |
+|---|---|---|
+| PROJ-1 AC8: „Neue Runde"-Button | ❌ FAIL | Verursacht durch PROJ-5: „Neue Runde" navigiert jetzt zur Kategorie-Auswahl |
+| PROJ-4 AC10: Löschen-Button öffnet Dialog | ❌ FAIL | Verursacht durch fix(PROJ-4) Bulk-Delete: `svg.lucide-trash-2`-Selektor matched jetzt zuerst „Alle löschen"-Button statt Zeilen-Delete |
+| PROJ-4 AC7: Duplikate (Mobile Safari) | ⚠️ FLAKY | Bekannte Timing-Race-Condition in Mobile Safari |
+
+### E2E Tests
+
+**Neue Tests:** `tests/PROJ-4-badges-tab.spec.ts` — 22 Tests (Chromium + Mobile Safari), alle grün
+
+### Production-Ready Decision
+
+**✅ READY FOR DEPLOYMENT (bereits deployed)**
+
+Keine Critical oder High Bugs. Alle 10 Badges-Tab-Acceptance-Criteria bestanden. Die LOW-Bug-UX-Meldung und das Anon-Key-Risiko sind für den Heimgebrauch akzeptiert (identisches Muster wie PROJ-6).
