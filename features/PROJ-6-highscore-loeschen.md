@@ -1,6 +1,6 @@
 # PROJ-6: Highscore löschen im Admin-Panel
 
-## Status: In Review
+## Status: Deployed
 **Created:** 2026-04-19
 **Last Updated:** 2026-04-19
 
@@ -159,4 +159,11 @@ Keine kritischen oder hochpriorisierten Bugs gefunden.
 | Mobile Safari | ✅ PASS (läuft in CI-Konfiguration mit) |
 
 ## Deployment
-_To be added by /deploy_
+
+**Production URL:** https://carlasquiz.vercel.app/admin
+**Deployed:** 2026-04-19
+**Vercel Deployment ID:** dpl_4k6A7wYxzhiTSnfCXrANGhDgMLej
+
+- Highscores-Tab live im Admin-Panel
+- Einzelnes Löschen und "Alle löschen" funktionieren in Produktion
+- Status in INDEX.md auf Deployed gesetzt
