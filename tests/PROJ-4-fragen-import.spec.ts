@@ -189,10 +189,24 @@ test.describe('PROJ-4: Fragen-Import', () => {
   test('AC7: Bekannte Duplikate werden in der Vorschau als "Duplikat" markiert', async ({ page }) => {
     await loginAsAdmin(page)
 
-    // Seed-Frage: Delfine schlafen mit einem Auge offen. (100% in der DB)
+    // Mock: existingTexts-API gibt deterministisch eine bekannte Frage zurück
+    // So wird die Duplikat-Erkennung unabhängig vom tatsächlichen DB-Inhalt getestet.
+    const DUPLICATE_TEXT = 'Delfine schlafen mit einem Auge offen.'
+    await page.route('**/api/admin/questions?all=true', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          questions: [
+            { fact_text: DUPLICATE_TEXT, is_true: true, explanation: 'Ja.', category: 'Tiere' },
+          ],
+        }),
+      })
+    })
+
     const csvFile = createCsvFile([
       {
-        frage: 'Delfine schlafen mit einem Auge offen.',
+        frage: DUPLICATE_TEXT,
         antwort: 'wahr',
         erklaerung: 'Delfine schlafen tatsächlich mit einer Gehirnhälfte.',
         kategorie: 'Tiere',
@@ -200,8 +214,8 @@ test.describe('PROJ-4: Fragen-Import', () => {
     ])
 
     await page.getByRole('tab', { name: /Importieren/i }).click()
-    // Warten bis die existingTexts geladen sind (API-Call im useEffect)
-    await page.waitForLoadState('networkidle')
+    // Warten bis existingTexts-API-Request abgeschlossen ist
+    await page.waitForResponse('**/api/admin/questions?all=true')
     await page.locator('input[type="file"]').setInputFiles(csvFile)
     await expect(page.getByRole('heading', { name: 'Vorschau' })).toBeVisible({ timeout: 8000 })
     // Duplikat-Badge soll sichtbar sein
