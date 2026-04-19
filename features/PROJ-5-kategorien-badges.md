@@ -1,6 +1,6 @@
 # PROJ-5: Kategorien & Badges
 
-## Status: Approved
+## Status: Deployed
 **Created:** 2026-04-18
 **Last Updated:** 2026-04-18
 
@@ -249,4 +249,16 @@ All prior feature tests verified to still pass after PROJ-5 changes:
 No Critical or High bugs. PROJ-5 acceptance criteria 15/15 passed. All prior features pass regression tests.
 
 ## Deployment
-_To be added by /deploy_
+
+**Deployed:** 2026-04-19
+**Production URL:** https://carlasquiz.vercel.app
+**Vercel Deployment ID:** dpl_2dcAsXTBqsjvwkR4iMnGpDyfKqAe
+**Git SHA:** 4903e0932d9c36299c4f7d865f58bccdec51bb0d
+
+### What's live
+- Kategorie-Auswahl nach Nickname-Eingabe (8 Kategorien + „Alle Kategorien")
+- Kategorie-Label während des Quiz (violetter Chip im Header + Chip pro Frage)
+- Badge-System: 8 Kategorie-Meister-Badges pro Spitzname (Supabase `nickname_badges`-Tabelle)
+- Badge-Popup bei Freischaltung (3s Auto-close)
+- Badge-Sammlung auf dem Highscore-Screen
+- `/api/categories`, `/api/badges`, `/api/badges/check` API-Routes live
