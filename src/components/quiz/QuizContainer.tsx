@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { supabase, type Question } from '@/lib/supabase'
+import { getKategorieEmoji, getKategorieLabel } from '@/lib/categories'
+import { BadgePopup } from '@/components/quiz/BadgePopup'
 import confetti from 'canvas-confetti'
 import { ArrowRight } from 'lucide-react'
 
@@ -22,6 +24,7 @@ interface RoundAnswer {
 
 interface QuizContainerProps {
   nickname: string
+  category: string  // 'alle' oder Kategorie-ID wie 'Tiere', 'Weltraum', …
   onChangeNickname: () => void
 }
 
@@ -51,25 +54,9 @@ function fireConfetti() {
   frame()
 }
 
-// ─── Category Emojis ─────────────────────────────────────────────────────────
-
-const CATEGORY_EMOJIS: Record<string, string> = {
-  Tiere: '🐾',
-  Weltraum: '🚀',
-  Natur: '🌿',
-  Koerper: '🫀',
-  Körper: '🫀',
-  Essen: '🍎',
-  Welt: '🌍',
-}
-
-function getCategoryEmoji(category: string): string {
-  return CATEGORY_EMOJIS[category] ?? '❓'
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps) {
+export function QuizContainer({ nickname, category, onChangeNickname }: QuizContainerProps) {
   const [phase, setPhase] = useState<GamePhase>('loading')
   const [errorType, setErrorType] = useState<ErrorType>('network')
   const [questions, setQuestions] = useState<Question[]>([])
@@ -87,6 +74,10 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
   const [milestone, setMilestone] = useState<5 | 10 | null>(null)
   const [showStreakEnd, setShowStreakEnd] = useState(false)
 
+  // ── Badge state ──
+  const [newBadgeCategory, setNewBadgeCategory] = useState<string | null>(null)
+  const badgeCheckedRef = useRef(false)
+
   const answeredRef = useRef(false)
   const scoreSavedRef = useRef(false)
   const milestoneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -97,6 +88,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
     setPhase('loading')
     answeredRef.current = false
     scoreSavedRef.current = false
+    badgeCheckedRef.current = false
     setCurrentIndex(0)
     setAnswers([])
     setLastResult(null)
@@ -108,11 +100,14 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
     setMaxStreak(0)
     setMilestone(null)
     setShowStreakEnd(false)
+    setNewBadgeCategory(null)
 
     try {
-      const { data, error } = await supabase
-        .from('questions')
-        .select('*')
+      let query = supabase.from('questions').select('*')
+      if (category && category !== 'alle') {
+        query = query.eq('category', category)
+      }
+      const { data, error } = await query
 
       if (error) {
         setErrorType('network')
@@ -120,23 +115,24 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
         return
       }
 
-      // Shuffle all questions client-side, then take 10 — ensures true randomness
-      // across the full question pool (ORDER BY RANDOM() not used due to Supabase tier limits)
-      const shuffled = [...(data as Question[])].sort(() => Math.random() - 0.5)
+      const pool = data as Question[]
 
-      if (shuffled.length < 10) {
+      // Für "Alle Kategorien": mindestens 10 Fragen nötig
+      if (category === 'alle' && pool.length < 10) {
         setErrorType('too_few_questions')
         setPhase('error')
         return
       }
 
+      // Shuffle and take up to 10
+      const shuffled = [...pool].sort(() => Math.random() - 0.5)
       setQuestions(shuffled.slice(0, 10))
       setPhase('playing')
     } catch {
       setErrorType('network')
       setPhase('error')
     }
-  }, [])
+  }, [category])
 
   useEffect(() => {
     loadQuestions()
@@ -156,7 +152,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
       body: JSON.stringify({
         nickname,
         score: finalScore,
-        total_questions: 10,
+        total_questions: questions.length,
       }),
     })
       .then(async (res) => {
@@ -173,7 +169,30 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
       .catch(() => {
         setRankState('error')
       })
-  }, [phase, answers, nickname])
+  }, [phase, answers, nickname, questions.length])
+
+  // Badge-Check when result phase is entered
+  useEffect(() => {
+    if (phase !== 'result' || badgeCheckedRef.current || category === 'alle') return
+    badgeCheckedRef.current = true
+
+    const correctQuestionIds = answers
+      .filter((a) => a.correct)
+      .map((a) => a.question.id)
+
+    fetch('/api/badges/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, category, correctQuestionIds, totalShown: questions.length }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.newBadge) setNewBadgeCategory(data.category as string)
+      })
+      .catch(() => {
+        // Fehler still loggen, kein Absturz
+      })
+  }, [phase, answers, nickname, category])
 
   const handleAnswer = useCallback(
     (answer: boolean) => {
@@ -241,7 +260,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
     setMilestone(null)
     if (milestoneTimerRef.current) clearTimeout(milestoneTimerRef.current)
 
-    if (currentIndex + 1 >= 10) {
+    if (currentIndex + 1 >= questions.length) {
       setPhase('result')
     } else {
       setIsVisible(false)
@@ -254,7 +273,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
         setPhase('playing')
       }, 300)
     }
-  }, [currentIndex])
+  }, [currentIndex, questions.length])
 
   const score = answers.filter((a) => a.correct).length
 
@@ -264,19 +283,28 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
   if (phase === 'error') return <ErrorScreen type={errorType} onRetry={loadQuestions} />
   if (phase === 'result')
     return (
-      <ResultScreen
-        score={score}
-        maxStreak={maxStreak}
-        nickname={nickname}
-        rankState={rankState}
-        rank={rank}
-        onNewRound={loadQuestions}
-        onChangeNickname={onChangeNickname}
-      />
+      <>
+        {newBadgeCategory && (
+          <BadgePopup
+            category={newBadgeCategory}
+            onClose={() => setNewBadgeCategory(null)}
+          />
+        )}
+        <ResultScreen
+          score={score}
+          totalQuestions={questions.length}
+          maxStreak={maxStreak}
+          nickname={nickname}
+          rankState={rankState}
+          rank={rank}
+          onNewRound={loadQuestions}
+          onChangeNickname={onChangeNickname}
+        />
+      </>
     )
 
   const current = questions[currentIndex]
-  const progressValue = ((currentIndex + (phase === 'feedback' ? 1 : 0)) / 10) * 100
+  const progressValue = ((currentIndex + (phase === 'feedback' ? 1 : 0)) / questions.length) * 100
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4 py-8">
@@ -299,20 +327,28 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
 
       <div className="relative z-10 w-full max-w-xl flex flex-col gap-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <span className="text-zinc-500 text-sm font-medium">
-            Frage {currentIndex + 1} von 10
-          </span>
-          <div className="flex items-center gap-3">
-            {streak > 0 && (
-              <span className="flex items-center gap-1 text-amber-400 font-bold text-sm">
-                🥁 {streak}
-              </span>
-            )}
-            <span className="text-cyan-400 font-bold text-sm">
-              {score} richtig
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <span className="text-zinc-500 text-sm font-medium">
+              Frage {currentIndex + 1} von {questions.length}
             </span>
+            <div className="flex items-center gap-3">
+              {streak > 0 && (
+                <span className="flex items-center gap-1 text-amber-400 font-bold text-sm">
+                  🥁 {streak}
+                </span>
+              )}
+              <span className="text-cyan-400 font-bold text-sm">
+                {score} richtig
+              </span>
+            </div>
           </div>
+          {/* Kategorie-Label */}
+          {category !== 'alle' && (
+            <span className="self-start px-2.5 py-0.5 rounded-full bg-violet-900/50 border border-violet-700/50 text-violet-300 text-xs font-semibold">
+              {getKategorieEmoji(category)} {getKategorieLabel(category)}
+            </span>
+          )}
         </div>
 
         {/* Progress bar */}
@@ -329,7 +365,7 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
             {/* Category badge */}
             {current.category && (
               <span className="inline-block mb-4 px-3 py-1 rounded-full bg-zinc-800 text-zinc-400 text-xs font-semibold uppercase tracking-wider border border-zinc-700">
-                {getCategoryEmoji(current.category)} {current.category}
+                {getKategorieEmoji(current.category)} {current.category}
               </span>
             )}
 
@@ -378,8 +414,9 @@ export function QuizContainer({ nickname, onChangeNickname }: QuizContainerProps
                 <div className="flex justify-center">
                   <button
                     onClick={handleAdvance}
-                    className="w-16 h-16 rounded-full bg-violet-600 hover:bg-violet-500 active:scale-95 text-white shadow-lg shadow-violet-900/40 transition-all duration-200 hover:scale-110 flex items-center justify-center border-2 border-violet-400/30 animate-pulse hover:animate-none"
+                    className="w-16 h-16 rounded-full bg-violet-600 hover:bg-violet-500 active:scale-95 text-white shadow-lg shadow-violet-900/40 transition-colors duration-200 flex items-center justify-center border-2 border-violet-400/30"
                     aria-label="Weiter zur nächsten Frage"
+                    data-testid="weiter-button"
                   >
                     <ArrowRight className="w-7 h-7" strokeWidth={3} />
                   </button>
@@ -501,6 +538,7 @@ function ErrorScreen({ type, onRetry }: { type: ErrorType; onRetry: () => void }
 
 interface ResultScreenProps {
   score: number
+  totalQuestions: number
   maxStreak: number
   nickname: string
   rankState: RankState
@@ -509,7 +547,7 @@ interface ResultScreenProps {
   onChangeNickname: () => void
 }
 
-function ResultScreen({ score, maxStreak, nickname, rankState, rank, onNewRound, onChangeNickname }: ResultScreenProps) {
+function ResultScreen({ score, totalQuestions, maxStreak, nickname, rankState, rank, onNewRound, onChangeNickname }: ResultScreenProps) {
   useEffect(() => {
     // Celebration confetti on result screen
     setTimeout(() => {
@@ -554,7 +592,7 @@ function ResultScreen({ score, maxStreak, nickname, rankState, rank, onNewRound,
             </p>
             <p className="text-white text-5xl font-black">
               {score}
-              <span className="text-zinc-500 text-3xl font-bold"> / 10</span>
+              <span className="text-zinc-500 text-3xl font-bold"> / {totalQuestions}</span>
             </p>
           </div>
 
@@ -564,7 +602,7 @@ function ResultScreen({ score, maxStreak, nickname, rankState, rank, onNewRound,
           <div className="w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
             <div
               className="h-3 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 transition-all duration-1000"
-              style={{ width: `${(score / 10) * 100}%` }}
+              style={{ width: `${(score / totalQuestions) * 100}%` }}
             />
           </div>
 

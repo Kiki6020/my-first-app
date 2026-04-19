@@ -21,3 +21,9 @@ export interface Score {
   total_questions: number
   created_at: string
 }
+
+export interface Badge {
+  nickname: string
+  category: string
+  unlocked_at: string
+}

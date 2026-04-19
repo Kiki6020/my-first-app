@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { BadgeSammlung } from '@/components/quiz/BadgeSammlung'
 
 export interface ScoreEntry {
   id: string
@@ -77,7 +78,15 @@ export function HighscoreList({ currentNickname, currentScore }: HighscoreListPr
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-6">
+      {/* Badge-Sammlung des eingeloggten Spielers */}
+      {currentNickname && (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <BadgeSammlung nickname={currentNickname} />
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
       {scores.map((entry, idx) => {
         const rank = idx + 1
         const emoji = rankEmoji(rank)
@@ -133,6 +142,7 @@ export function HighscoreList({ currentNickname, currentScore }: HighscoreListPr
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

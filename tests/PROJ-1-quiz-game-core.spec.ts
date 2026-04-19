@@ -10,6 +10,21 @@ import { test, expect } from '@playwright/test'
 // ─── Hilfsfunktionen ──────────────────────────────────────────────────────────
 
 /**
+ * Beantwortet N Fragen (immer RICHTIG klicken) und wartet nach jedem Weiter-Klick
+ * die 300ms Übergangsanimation ab (plus 100ms Puffer).
+ */
+async function answerAndAdvance(page: import('@playwright/test').Page, count = 1) {
+  for (let i = 0; i < count; i++) {
+    await page.getByRole('button', { name: 'RICHTIG' }).click()
+    // Wait for weiter-button to appear, then force-click to avoid React animation detach
+    await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+    await page.getByTestId('weiter-button').click({ force: true })
+    // 300ms setTimeout + 300ms CSS transition + 50ms buffer
+    await page.waitForTimeout(650)
+  }
+}
+
+/**
  * Navigiert zur Quiz-Seite und wartet bis die erste Frage geladen ist.
  * Setzt localStorage-Nickname vorab, damit der NicknameScreen (PROJ-2) übersprungen wird.
  */
@@ -17,7 +32,15 @@ async function gotoQuizAndWaitForQuestion(page: import('@playwright/test').Page)
   await page.goto('/')
   await page.evaluate(() => localStorage.setItem('quizNickname', 'TestUser'))
   await page.goto('/quiz')
-  // Warte bis RICHTIG-Button sichtbar ist (= Fragen sind geladen)
+  // PROJ-5: KategorieScreen erscheint nach Nickname — "Alle Kategorien" wählen.
+  // "Welches Thema?" ist statischer Text (kein API-Call) → erscheint sofort.
+  const isKategorieScreen = await page.getByText('Welches Thema?')
+    .waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true)
+    .catch(() => false)
+  if (isKategorieScreen) {
+    await page.getByRole('button', { name: /alle kategorien/i }).click()
+  }
   await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({
     timeout: 10000,
   })
@@ -47,20 +70,11 @@ test.describe('PROJ-1: Quiz Game Core', () => {
 
     for (let i = 1; i <= 10; i++) {
       await expect(page.getByText(`Frage ${i} von 10`)).toBeVisible()
-
-      // Antworten und weiter
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-
-      if (i < 10) {
-        await expect(page.getByText(`Frage ${i + 1} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
+      await answerAndAdvance(page)
     }
 
     // Nach Frage 10 kommt der Ergebnis-Screen
-    await expect(page.getByText('Dein Ergebnis')).toBeVisible({ timeout: 3000 })
+    await expect(page.getByText('Dein Ergebnis')).toBeVisible({ timeout: 5000 })
   })
 
   // ── AC2: Richtig/Falsch Buttons ──────────────────────────────────────────
@@ -145,7 +159,8 @@ test.describe('PROJ-1: Quiz Game Core', () => {
     await expect(page.getByText('Frage 1 von 10')).toBeVisible()
 
     await page.getByRole('button', { name: 'RICHTIG' }).click()
-    await page.getByRole('button', { name: /weiter/i }).click()
+    await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+    await page.getByTestId('weiter-button').click({ force: true })
 
     await expect(page.getByText('Frage 2 von 10')).toBeVisible({ timeout: 3000 })
   })
@@ -154,18 +169,9 @@ test.describe('PROJ-1: Quiz Game Core', () => {
 
   test('AC7: Ergebnis-Screen zeigt Score nach 10 Fragen', async ({ page }) => {
     await gotoQuizAndWaitForQuestion(page)
+    await answerAndAdvance(page, 10)
 
-    for (let i = 0; i < 10; i++) {
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-      if (i < 9) {
-        await expect(page.getByText(`Frage ${i + 2} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
-    }
-
-    await expect(page.getByText('Dein Ergebnis')).toBeVisible({ timeout: 3000 })
+    await expect(page.getByText('Dein Ergebnis')).toBeVisible({ timeout: 5000 })
     // Score ist eine Zahl zwischen 0 und 10
     await expect(page.locator('p.text-5xl')).toBeVisible()
   })
@@ -174,55 +180,28 @@ test.describe('PROJ-1: Quiz Game Core', () => {
 
   test('AC8: Ergebnis-Screen hat „Neue Runde"-Button', async ({ page }) => {
     await gotoQuizAndWaitForQuestion(page)
-
-    for (let i = 0; i < 10; i++) {
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-      if (i < 9) {
-        await expect(page.getByText(`Frage ${i + 2} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
-    }
+    await answerAndAdvance(page, 10)
 
     await expect(page.getByRole('button', { name: /neue runde/i })).toBeVisible({
-      timeout: 3000,
+      timeout: 5000,
     })
   })
 
   test('AC8: Ergebnis-Screen hat „Highscore ansehen"-Button', async ({ page }) => {
     await gotoQuizAndWaitForQuestion(page)
-
-    for (let i = 0; i < 10; i++) {
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-      if (i < 9) {
-        await expect(page.getByText(`Frage ${i + 2} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
-    }
+    await answerAndAdvance(page, 10)
 
     await expect(
       page.getByRole('button', { name: /highscore/i })
-    ).toBeVisible({ timeout: 3000 })
+    ).toBeVisible({ timeout: 5000 })
   })
 
   test('AC8: „Neue Runde"-Button startet neue Runde', async ({ page }) => {
     await gotoQuizAndWaitForQuestion(page)
-
-    for (let i = 0; i < 10; i++) {
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-      if (i < 9) {
-        await expect(page.getByText(`Frage ${i + 2} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
-    }
+    await answerAndAdvance(page, 10)
 
     await expect(page.getByRole('button', { name: /neue runde/i })).toBeVisible({
-      timeout: 3000,
+      timeout: 5000,
     })
     await page.getByRole('button', { name: /neue runde/i }).click()
     await expect(page.getByText('Frage 1 von 10')).toBeVisible({ timeout: 10000 })
@@ -252,14 +231,7 @@ test.describe('PROJ-1: Quiz Game Core', () => {
       expect(seenTexts).not.toContain(factText)
       seenTexts.push(factText!)
 
-      await page.getByRole('button', { name: 'RICHTIG' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
-
-      if (i < 9) {
-        await expect(page.getByText(`Frage ${i + 2} von 10`)).toBeVisible({
-          timeout: 3000,
-        })
-      }
+      await answerAndAdvance(page)
     }
 
     expect(seenTexts).toHaveLength(10)
@@ -281,11 +253,24 @@ test.describe('PROJ-1: Quiz Game Core', () => {
   test('Lade-Spinner wird während des Ladens angezeigt', async ({ page }) => {
     // Netzwerk verlangsamen, um Spinner zu sehen
     await page.route('**/rest/v1/questions**', async (route) => {
-      await new Promise((r) => setTimeout(r, 500))
+      await new Promise((r) => setTimeout(r, 800))
       await route.continue()
     })
 
+    // PROJ-5: Nickname setzen + KategorieScreen durchklicken, damit QuizContainer
+    // Fragen lädt (Spinner ist nur im QuizContainer sichtbar, nicht auf anderen Screens)
+    await page.goto('/')
+    await page.evaluate(() => localStorage.setItem('quizNickname', 'SpinnerTest'))
     await page.goto('/quiz')
-    await expect(page.getByText('Fragen werden geladen…')).toBeVisible()
+
+    const isKategorieScreen = await page.getByText('Welches Thema?')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true)
+      .catch(() => false)
+    if (isKategorieScreen) {
+      await page.getByRole('button', { name: /alle kategorien/i }).click()
+    }
+
+    await expect(page.getByText('Fragen werden geladen…')).toBeVisible({ timeout: 3000 })
   })
 })

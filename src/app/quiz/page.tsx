@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 import { QuizContainer } from '@/components/quiz/QuizContainer'
 import { NicknameScreen } from '@/components/quiz/NicknameScreen'
+import { KategorieScreen } from '@/components/quiz/KategorieScreen'
 
 export default function QuizPage() {
   const [nickname, setNickname] = useState<string | null>(null)
+  const [kategorie, setKategorie] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -17,11 +19,13 @@ export default function QuizPage() {
   const handleNicknameSet = (name: string) => {
     localStorage.setItem('quizNickname', name)
     setNickname(name)
+    setKategorie(null)
   }
 
   const handleChangeNickname = () => {
     localStorage.removeItem('quizNickname')
     setNickname(null)
+    setKategorie(null)
   }
 
   if (!mounted) return null
@@ -30,7 +34,20 @@ export default function QuizPage() {
     return <NicknameScreen onNicknameSet={handleNicknameSet} />
   }
 
+  if (!kategorie) {
+    return (
+      <KategorieScreen
+        nickname={nickname}
+        onKategorieSelected={setKategorie}
+      />
+    )
+  }
+
   return (
-    <QuizContainer nickname={nickname} onChangeNickname={handleChangeNickname} />
+    <QuizContainer
+      nickname={nickname}
+      category={kategorie}
+      onChangeNickname={handleChangeNickname}
+    />
   )
 }

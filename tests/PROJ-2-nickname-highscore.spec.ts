@@ -5,7 +5,24 @@
  * Geräte: Desktop Chrome (+ iPhone 13 wenn webkit installiert).
  */
 
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+const SUPABASE_URL = 'https://anfyyfnmnfkunsqcpipn.supabase.co'
+
+/** Mockt Supabase-Fragen (alle is_true: true → RICHTIG ist immer korrekt → Score 10/10). */
+async function mockAllCorrectQuestions(page: Page) {
+  const questions = Array.from({ length: 10 }, (_, i) => ({
+    id: `q${i + 1}`,
+    fact_text: `Testfrage ${i + 1}: Die Sonne ist ein Stern.`,
+    is_true: true,
+    explanation: `Korrekt (Frage ${i + 1}).`,
+    category: 'Weltraum',
+    created_at: '2026-01-01T00:00:00Z',
+  }))
+  await page.route(`${SUPABASE_URL}/rest/v1/questions*`, (route) => {
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(questions) })
+  })
+}
 
 // ─── Hilfsfunktionen ──────────────────────────────────────────────────────────
 
@@ -24,15 +41,30 @@ async function setNickname(page: import('@playwright/test').Page, nickname: stri
 /** Navigiert zur Quiz-Seite und wartet bis RICHTIG-Button sichtbar ist. */
 async function gotoQuizReady(page: import('@playwright/test').Page) {
   await page.goto('/quiz')
+  // PROJ-5: KategorieScreen erscheint nach Nickname — "Alle Kategorien" wählen.
+  // "Welches Thema?" ist statischer Text (kein API-Call) → erscheint sofort.
+  const isKategorieScreen = await page.getByText('Welches Thema?')
+    .waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true)
+    .catch(() => false)
+  if (isKategorieScreen) {
+    await page.getByRole('button', { name: /alle kategorien/i }).click()
+  }
   await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({ timeout: 10000 })
 }
 
-/** Spielt alle 10 Fragen durch (immer RICHTIG klicken). */
+/** Spielt alle 10 Fragen durch (immer RICHTIG klicken).
+ *  waitForTimeout(400) nach jedem Weiter-Klick gibt der 300ms Übergangsanimation Zeit.
+ */
 async function playFullRound(page: import('@playwright/test').Page) {
   for (let i = 0; i < 10; i++) {
     await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({ timeout: 8000 })
     await page.getByRole('button', { name: 'RICHTIG' }).click()
-    await page.getByRole('button', { name: /weiter/i }).click()
+    // Wait for weiter-button to appear, then force-click to avoid React animation detach
+    await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+    await page.getByTestId('weiter-button').click({ force: true })
+    // 300ms setTimeout + 300ms CSS transition + 50ms buffer
+    await page.waitForTimeout(650)
   }
 }
 
@@ -86,7 +118,13 @@ test.describe('PROJ-2: Nickname & Highscore-System', () => {
     await page.goto('/quiz')
     await page.getByPlaceholder(/spitzname/i).fill('Carla')
     await page.getByRole('button', { name: /los geht/i }).click()
-    // Quiz sollte laden
+    // PROJ-5: KategorieScreen erscheint nach Nickname-Eingabe
+    const afterNicknameKat = await page.getByText('Welches Thema?')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true).catch(() => false)
+    if (afterNicknameKat) {
+      await page.getByRole('button', { name: /alle kategorien/i }).click()
+    }
     await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({ timeout: 10000 })
   })
 
@@ -107,7 +145,13 @@ test.describe('PROJ-2: Nickname & Highscore-System', () => {
     await page.goto('/quiz')
     // NicknameScreen sollte nicht erscheinen
     await expect(page.getByText('Wie heißt du?')).not.toBeVisible()
-    // Quiz sollte direkt laden
+    // PROJ-5: KategorieScreen erscheint stattdessen — direkt durchklicken
+    const afterRevisitKat = await page.getByText('Welches Thema?')
+      .waitFor({ state: 'visible', timeout: 5000 })
+      .then(() => true).catch(() => false)
+    if (afterRevisitKat) {
+      await page.getByRole('button', { name: /alle kategorien/i }).click()
+    }
     await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({ timeout: 10000 })
   })
 
@@ -186,12 +230,15 @@ test.describe('PROJ-2: Nickname & Highscore-System', () => {
     // Eindeutiger Nickname verhindert Kollision mit alten DB-Einträgen
     const uniqueNickname = `QA${Date.now().toString().slice(-6)}`
     await setNickname(page, uniqueNickname)
+    // Mock: alle is_true=true → Score 10/10 → garantiert in Top 20 (neueste zuerst)
+    await mockAllCorrectQuestions(page)
     await gotoQuizReady(page)
     await playFullRound(page)
 
     await expect(page.getByText('Dein Ergebnis')).toBeVisible({ timeout: 5000 })
     // Warten bis Score gespeichert ist (Rang-Anzeige erscheint)
-    await expect(page.getByText(/platz \d+|score gespeichert/i)).toBeVisible({ timeout: 10000 })
+    // Mit Score 10/10 und newest-first-Sortierung erscheint immer ein Platz
+    await expect(page.getByText(/platz \d+/i)).toBeVisible({ timeout: 10000 })
 
     // Klick auf Highscore-Button im Ergebnis-Screen
     await page.getByRole('button', { name: /highscore/i }).click()

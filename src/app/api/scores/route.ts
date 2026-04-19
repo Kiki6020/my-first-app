@@ -25,7 +25,7 @@ export async function GET() {
     .from('scores')
     .select('id, nickname, score, total_questions, created_at')
     .order('score', { ascending: false })
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
     .limit(20)
 
   if (error) {

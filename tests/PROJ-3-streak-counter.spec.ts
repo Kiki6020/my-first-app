@@ -41,6 +41,15 @@ async function gotoQuizAndWaitForQuestion(page: Page) {
   await page.goto('/')
   await page.evaluate(() => localStorage.setItem('quizNickname', 'StreakTester'))
   await page.goto('/quiz')
+  // PROJ-5: KategorieScreen erscheint nach Nickname — "Alle Kategorien" wählen.
+  // "Welches Thema?" ist statischer Text → erscheint sofort nach Seitenrendering.
+  const isKategorieScreen = await page.getByText('Welches Thema?')
+    .waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true)
+    .catch(() => false)
+  if (isKategorieScreen) {
+    await page.getByRole('button', { name: /alle kategorien/i }).click()
+  }
   await expect(page.getByRole('button', { name: 'RICHTIG' })).toBeVisible({
     timeout: 10000,
   })
@@ -50,7 +59,8 @@ async function gotoQuizAndWaitForQuestion(page: Page) {
 async function answerCorrectly(page: Page, count: number) {
   for (let i = 0; i < count; i++) {
     await page.getByRole('button', { name: 'RICHTIG' }).click()
-    await page.getByRole('button', { name: /weiter/i }).click()
+    await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+    await page.getByTestId('weiter-button').click({ force: true })
     await page.waitForTimeout(400)
   }
 }
@@ -131,7 +141,7 @@ test.describe('PROJ-3: Streak-Counter mit Trommelwirbel-Animation', () => {
     await answerCorrectly(page, 4)
     await page.getByRole('button', { name: 'RICHTIG' }).click()
     await expect(page.getByText('Wow!')).toBeVisible({ timeout: 2000 })
-    await page.getByRole('button', { name: /weiter/i }).click()
+    await page.getByTestId('weiter-button').click({ force: true })
     await expect(page.getByText('Wow!')).not.toBeVisible()
   })
 
@@ -153,7 +163,8 @@ test.describe('PROJ-3: Streak-Counter mit Trommelwirbel-Animation', () => {
     await answerCorrectly(page, 3)
     for (let i = 3; i < 10; i++) {
       await page.getByRole('button', { name: 'FALSCH' }).click()
-      await page.getByRole('button', { name: /weiter/i }).click()
+      await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+      await page.getByTestId('weiter-button').click({ force: true })
       await page.waitForTimeout(500)
     }
     // Warte bis Ergebnis-Screen geladen ist
@@ -168,7 +179,8 @@ test.describe('PROJ-3: Streak-Counter mit Trommelwirbel-Animation', () => {
     for (let i = 0; i < 10; i++) {
       await page.getByRole('button', { name: 'FALSCH' }).click()
       if (i < 9) {
-        await page.getByRole('button', { name: /weiter/i }).click()
+        await expect(page.getByTestId('weiter-button')).toBeVisible({ timeout: 5000 })
+        await page.getByTestId('weiter-button').click({ force: true })
         await page.waitForTimeout(400)
       }
     }

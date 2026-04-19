@@ -30,6 +30,16 @@ vi.mock('@/lib/supabase', () => {
 
 import { QuizContainer } from '@/components/quiz/QuizContainer'
 
+// ─── Default Props ────────────────────────────────────────────────────────────
+
+// QuizContainer erwartet nach PROJ-5 Pflicht-Props. category='alle' umgeht
+// die Kategorie-Filter-Logik und lässt den Mock unverändert funktionieren.
+const defaultProps = {
+  nickname: 'Testuser',
+  category: 'alle',
+  onChangeNickname: vi.fn(),
+}
+
 // ─── Hilfsfunktionen ──────────────────────────────────────────────────────────
 
 /** Erstellt N Mock-Fragen mit eindeutigen IDs — alle is_true=true für einfaches Testing */
@@ -73,28 +83,28 @@ describe('PROJ-1: Quiz Game Core', () => {
   describe('Fehler-Zustände (Edge Cases)', () => {
     it('zeigt Fehlermeldung bei Netzwerkfehler', async () => {
       setupNetworkError()
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText('Verbindungsproblem')).toBeInTheDocument()
     })
 
     it('zeigt Fehlermeldung wenn weniger als 10 Fragen verfügbar', async () => {
       setupTooFewQuestions(5)
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText('Zu wenig Fragen')).toBeInTheDocument()
     })
 
     it('zeigt "Neu laden"-Button im Fehlerfall', async () => {
       setupNetworkError()
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByRole('button', { name: /neu laden/i })).toBeInTheDocument()
     })
 
     it('"Neu laden"-Button startet Ladevorgang neu', async () => {
       setupNetworkError()
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText('Verbindungsproblem')).toBeInTheDocument()
 
@@ -110,32 +120,32 @@ describe('PROJ-1: Quiz Game Core', () => {
 
   describe('Spiel: Frage anzeigen', () => {
     it('zeigt Fortschrittsanzeige „Frage 1 von 10"', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText('Frage 1 von 10')).toBeInTheDocument()
     })
 
     it('zeigt RICHTIG- und FALSCH-Buttons', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByRole('button', { name: 'RICHTIG' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'FALSCH' })).toBeInTheDocument()
     })
 
     it('zeigt einen Fun-Fact-Text', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText(/Fun Fact Nummer \d+/)).toBeInTheDocument()
     })
 
     it('zeigt Kategorie-Badge', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText(/Tiere/)).toBeInTheDocument()
     })
 
     it('zeigt initialen Score „0 richtig"', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
       expect(screen.getByText(/0\s*richtig/)).toBeInTheDocument()
     })
@@ -145,7 +155,7 @@ describe('PROJ-1: Quiz Game Core', () => {
 
   describe('Spiel: Antworten', () => {
     async function renderAndLoad() {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
     }
 
@@ -193,7 +203,7 @@ describe('PROJ-1: Quiz Game Core', () => {
 
   describe('Ergebnis-Screen', () => {
     async function playAllTenQuestions() {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
 
       for (let i = 0; i < 10; i++) {
@@ -241,7 +251,7 @@ describe('PROJ-1: Quiz Game Core', () => {
 
   describe('Spiellogik: Keine doppelten Fragen', () => {
     it('zeigt jede Frage in einer Runde nur einmal', async () => {
-      render(<QuizContainer />)
+      render(<QuizContainer {...defaultProps} />)
       await act(() => vi.runAllTimersAsync())
 
       const seenFactTexts: string[] = []
