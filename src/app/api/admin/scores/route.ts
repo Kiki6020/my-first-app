@@ -22,3 +22,16 @@ export async function GET() {
 
   return NextResponse.json({ scores: data })
 }
+
+export async function DELETE() {
+  const { error } = await supabase.from('scores').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+
+  if (error) {
+    return NextResponse.json(
+      { error: 'Fehler beim Löschen aller Highscores' },
+      { status: 500 }
+    )
+  }
+
+  return NextResponse.json({ ok: true })
+}

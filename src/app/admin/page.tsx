@@ -740,6 +740,7 @@ function HighscoresTab() {
   const [scores, setScores] = useState<DbScore[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingAll, setDeletingAll] = useState(false)
 
   const loadScores = useCallback(async () => {
     setLoading(true)
@@ -770,6 +771,18 @@ function HighscoresTab() {
     }
   }
 
+  async function handleDeleteAll() {
+    setDeletingAll(true)
+    try {
+      await fetch('/api/admin/scores', { method: 'DELETE' })
+    } catch {
+      // silent
+    } finally {
+      setDeletingAll(false)
+      await loadScores()
+    }
+  }
+
   function formatDate(iso: string) {
     const d = new Date(iso)
     return d.toLocaleString('de-AT', {
@@ -788,14 +801,50 @@ function HighscoresTab() {
           <h2 className="text-white font-bold text-lg">Highscores</h2>
           <p className="text-zinc-400 text-sm mt-0.5">{scores.length} Einträge</p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={loadScores}
-          className="border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
-        >
-          Aktualisieren
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadScores}
+            className="border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+          >
+            Aktualisieren
+          </Button>
+          {scores.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={deletingAll}
+                  className="border-red-800/60 text-red-400 hover:text-red-300 hover:bg-red-950/30 gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {deletingAll ? 'Löschen…' : 'Alle löschen'}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Alle Highscores löschen?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-zinc-400">
+                    Alle {scores.length} Einträge werden dauerhaft gelöscht. Die Rangliste ist danach leer.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+                    Abbrechen
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAll}
+                    className="bg-red-600 hover:bg-red-500 text-white"
+                  >
+                    Alle löschen
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
       </div>
 
       {loading ? (
