@@ -1,6 +1,6 @@
 # PROJ-6: Highscore löschen im Admin-Panel
 
-## Status: In Progress
+## Status: In Review
 **Created:** 2026-04-19
 **Last Updated:** 2026-04-19
 
@@ -10,6 +10,9 @@
 - Tab wired into existing `TabsList` and `TabsContent` structure
 - Scores loaded from existing `GET /api/scores` endpoint
 - Date formatted with `de-AT` locale (e.g. "19.04.2026, 14:30")
+- Added "Alle löschen" button with AlertDialog (shows entry count before confirming)
+- Added `DELETE /api/admin/scores` route for bulk delete
+- Fixed: Added missing RLS DELETE policy on `scores` table in Supabase (was silently blocking all deletes)
 
 ## Dependencies
 - Requires: PROJ-2 (Nickname & Highscore-System) — scores-Tabelle und API-Routen existieren bereits
