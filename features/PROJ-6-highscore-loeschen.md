@@ -1,8 +1,15 @@
 # PROJ-6: Highscore löschen im Admin-Panel
 
-## Status: Planned
+## Status: In Progress
 **Created:** 2026-04-19
 **Last Updated:** 2026-04-19
+
+## Implementation Notes
+- `HighscoresTab` component added to `src/app/admin/page.tsx` (same file as existing tabs)
+- New API route `src/app/api/admin/scores/[id]/route.ts` — DELETE handler with UUID validation
+- Tab wired into existing `TabsList` and `TabsContent` structure
+- Scores loaded from existing `GET /api/scores` endpoint
+- Date formatted with `de-AT` locale (e.g. "19.04.2026, 14:30")
 
 ## Dependencies
 - Requires: PROJ-2 (Nickname & Highscore-System) — scores-Tabelle und API-Routen existieren bereits

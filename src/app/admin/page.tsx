@@ -47,6 +47,14 @@ interface DbQuestion {
   created_at: string
 }
 
+interface DbScore {
+  id: string
+  nickname: string
+  score: number
+  total_questions: number
+  created_at: string
+}
+
 // ─── CSV template ─────────────────────────────────────────────────────────────
 
 const CSV_TEMPLATE =
@@ -726,6 +734,149 @@ function QuestionsTab() {
   )
 }
 
+// ─── Highscores Tab ───────────────────────────────────────────────────────────
+
+function HighscoresTab() {
+  const [scores, setScores] = useState<DbScore[]>([])
+  const [loading, setLoading] = useState(true)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const loadScores = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/scores')
+      const data = await res.json()
+      setScores(data.scores ?? [])
+    } catch {
+      // silent — user can reload
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadScores()
+  }, [loadScores])
+
+  async function handleDelete(id: string) {
+    setDeletingId(id)
+    try {
+      await fetch(`/api/admin/scores/${id}`, { method: 'DELETE' })
+    } catch {
+      // silent
+    } finally {
+      setDeletingId(null)
+      await loadScores()
+    }
+  }
+
+  function formatDate(iso: string) {
+    const d = new Date(iso)
+    return d.toLocaleString('de-AT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-white font-bold text-lg">Highscores</h2>
+          <p className="text-zinc-400 text-sm mt-0.5">{scores.length} Einträge</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={loadScores}
+          className="border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+        >
+          Aktualisieren
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="w-8 h-8 rounded-full border-4 border-zinc-700 border-t-cyan-400 animate-spin" />
+        </div>
+      ) : scores.length === 0 ? (
+        <div className="rounded-2xl border border-zinc-800 p-10 text-center text-zinc-500">
+          Noch keine Highscores vorhanden.
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-zinc-800 overflow-hidden">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-zinc-800 hover:bg-transparent">
+                  <TableHead className="text-zinc-400">Spitzname</TableHead>
+                  <TableHead className="text-zinc-400 w-20">Score</TableHead>
+                  <TableHead className="text-zinc-400 w-40">Datum & Uhrzeit</TableHead>
+                  <TableHead className="text-zinc-400 w-16 text-right">Aktion</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {scores.map((s, i) => (
+                  <TableRow key={s.id} className="border-zinc-800">
+                    <TableCell className="text-zinc-200 text-sm font-medium">
+                      <span className="text-zinc-500 text-xs mr-2">#{i + 1}</span>
+                      {s.nickname}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="bg-violet-600/20 text-violet-300 border-violet-600/30 text-xs">
+                        {s.score}/{s.total_questions}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-zinc-400 text-sm">
+                      {formatDate(s.created_at)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={deletingId === s.id}
+                            className="text-zinc-500 hover:text-red-400 hover:bg-red-950/30 w-8 h-8"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Highscore löschen?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">
+                              Der Eintrag von &ldquo;{s.nickname}&rdquo; ({s.score}/{s.total_questions} Punkte) wird dauerhaft gelöscht.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+                              Abbrechen
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(s.id)}
+                              className="bg-red-600 hover:bg-red-500 text-white"
+                            >
+                              Löschen
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Main Admin Page ──────────────────────────────────────────────────────────
 
 export default function AdminPage() {
@@ -802,6 +953,12 @@ export default function AdminPage() {
             >
               📋 Fragen verwalten
             </TabsTrigger>
+            <TabsTrigger
+              value="highscores"
+              className="rounded-lg data-[state=active]:bg-violet-600 data-[state=active]:text-white text-zinc-400"
+            >
+              🏆 Highscores
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="import" className="mt-6">
@@ -810,6 +967,10 @@ export default function AdminPage() {
 
           <TabsContent value="questions" className="mt-6">
             <QuestionsTab />
+          </TabsContent>
+
+          <TabsContent value="highscores" className="mt-6">
+            <HighscoresTab />
           </TabsContent>
         </Tabs>
       </div>
