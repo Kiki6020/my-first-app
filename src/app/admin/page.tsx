@@ -744,7 +744,7 @@ function HighscoresTab() {
   const loadScores = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/scores')
+      const res = await fetch('/api/admin/scores')
       const data = await res.json()
       setScores(data.scores ?? [])
     } catch {
