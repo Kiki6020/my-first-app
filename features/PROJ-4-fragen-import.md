@@ -201,6 +201,14 @@ _Added: 2026-04-18_
 - **Git commit:** `2706e48` feat(PROJ-4): Add Fragen-Import with CSV/JSON upload and admin panel
 - **Git tag:** v1.4.0-PROJ-4
 
+## Deployment (Update 2026-04-19)
+
+- **Production URL:** https://carlasquiz.vercel.app/admin
+- **Deployed:** 2026-04-19
+- **Vercel Deployment ID:** dpl_BxpfK8mPNzJz2Dpo3sdpuRctBGxk
+- **Git commit:** `0469aa3` fix(PROJ-4): Fix CSV import for Numbers/Excel export + add bulk delete
+- **Git tag:** v1.4.1-PROJ-4-fix
+
 **Required Vercel Environment Variables (must be set in Vercel Dashboard):**
 - `ADMIN_PASSWORD` — the password used to log in to /admin (choose something secure, not the default)
 - `ADMIN_SESSION_SECRET` — a random secret for HMAC session cookie signing (generate with e.g. `openssl rand -hex 32`)
